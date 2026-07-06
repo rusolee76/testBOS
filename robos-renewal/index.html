@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROBOS — Define the NeXt Standard</title>
+<meta name="description" content="ROBOS — Data-Driven 비정형 산업을 재정의하는 Robotics and AI System Platform Leader">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@500,700,900&display=swap" rel="stylesheet">
+<style>
+/* ============ ROBOS Re:Branding Design Tokens ============ */
+:root{
+  --black:#0C0C0C;
+  --black-2:#101114;
+  --panel:#14161A;
+  --white:#F1F4FA;
+  --gray:#A5B4C6;
+  --gray-dim:rgba(165,180,198,.55);
+  --blue:#1F51FF;
+  --blue-soft:rgba(31,81,255,.14);
+  --line:rgba(165,180,198,.16);
+  --line-strong:rgba(165,180,198,.32);
+  --sans:'Pretendard Variable',Pretendard,-apple-system,'Malgun Gothic',sans-serif;
+  --disp:'Satoshi','Pretendard Variable',sans-serif;
+  --max:1240px;
+  --cut:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.65;
+  letter-spacing:-0.01em;
+  overflow-x:hidden;
+}
+::selection{background:var(--blue);color:#fff}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+img{max-width:100%}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+.en{font-family:var(--disp)}
+
+/* Expand-Frame motif: cut-corner frame */
+.frame{
+  position:relative;
+  background:var(--panel);
+  border:1px solid var(--line);
+  clip-path:polygon(var(--cut) 0,calc(100% - var(--cut)) 0,100% var(--cut),100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,var(--cut) 100%,0 calc(100% - var(--cut)),0 var(--cut));
+}
+.frame::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  clip-path:polygon(var(--cut) 0,calc(100% - var(--cut)) 0,100% var(--cut),100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,var(--cut) 100%,0 calc(100% - var(--cut)),0 var(--cut),0 calc(var(--cut) + 1px),1px calc(var(--cut) + 1px),1px calc(100% - var(--cut) - 1px),calc(var(--cut) + 1px) calc(100% - 1px),calc(100% - var(--cut) - 1px) calc(100% - 1px),calc(100% - 1px) calc(100% - var(--cut) - 1px),calc(100% - 1px) calc(var(--cut) + 1px),calc(100% - var(--cut) - 1px) 1px,calc(var(--cut) + 1px) 1px,0 var(--cut));
+  background:var(--line-strong);
+}
+
+/* Section scaffolding */
+section{position:relative;padding:130px 0}
+.sec-label{
+  display:flex;align-items:center;gap:14px;
+  font-family:var(--disp);font-weight:700;font-size:13px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--blue);margin-bottom:22px;
+}
+.sec-label::before{content:"";width:34px;height:1px;background:var(--blue)}
+.sec-title{
+  font-size:clamp(28px,4vw,46px);font-weight:800;line-height:1.28;letter-spacing:-0.03em;
+  margin-bottom:16px;
+}
+.sec-desc{color:var(--gray);font-size:17px;max-width:640px;font-weight:300}
+.sec-head{margin-bottom:64px}
+
+/* Reveal motion: fade-up 24px / 0.4s, 60ms stagger via inline delay */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease}
+.rv.in{opacity:1;transform:none}
+
+/* ============ GNB ============ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  transition:background .35s ease,border-color .35s ease;
+  border-bottom:1px solid transparent;
+  background:rgba(12,12,12,.35);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+}
+header.solid{background:rgba(12,12,12,.88);border-bottom-color:var(--line)}
+.nav{display:flex;align-items:center;gap:36px;height:72px;max-width:1400px;margin:0 auto;padding:0 32px}
+.logo{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.logo svg{height:18px;width:auto;display:block}
+.nav-links{display:flex;gap:30px;margin-left:auto}
+.nav-links a{
+  font-size:14.5px;font-weight:500;color:var(--gray);letter-spacing:0;
+  transition:color .2s;position:relative;padding:6px 0;
+}
+.nav-links a:hover,.nav-links a.on{color:var(--white)}
+.nav-links a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1.5px;background:var(--blue);transition:right .25s}
+.nav-links a:hover::after,.nav-links a.on::after{right:0}
+.nav-cta{display:flex;align-items:center;gap:18px;flex-shrink:0}
+.lang{font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.08em;color:var(--gray-dim);cursor:pointer}
+.lang b{color:var(--white)}
+.btn-ir{
+  font-size:13.5px;font-weight:600;color:#fff;background:var(--blue);
+  padding:10px 22px;border:none;cursor:pointer;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  transition:filter .2s;
+}
+.btn-ir:hover{filter:brightness(1.15)}
+.menu-toggle{display:none}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:100vh;padding:0;display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+#lidar{position:absolute;inset:0;width:100%;height:100%}
+/* In the Dark, We See — light beam */
+.beam{
+  position:absolute;left:-10%;right:-10%;height:220px;top:58%;pointer-events:none;
+  background:
+    radial-gradient(52% 34% at 50% 50%,rgba(241,244,250,.34),rgba(241,244,250,0) 70%),
+    radial-gradient(80% 18% at 50% 50%,rgba(165,180,198,.28),rgba(165,180,198,0) 75%);
+  filter:blur(6px);
+  animation:beamPulse 7s ease-in-out infinite;
+}
+@keyframes beamPulse{0%,100%{opacity:.75}50%{opacity:1}}
+.hero-inner{position:relative;z-index:2;padding-top:72px}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--disp);font-size:12.5px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--gray);border:1px solid var(--line-strong);padding:9px 18px;margin-bottom:34px;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  opacity:0;animation:fadeUp .8s .3s ease forwards;
+}
+.hero-tag i{width:6px;height:6px;background:var(--blue);display:inline-block;animation:blink 2.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero h1{
+  font-family:var(--disp);
+  font-size:clamp(42px,7vw,88px);font-weight:900;line-height:1.04;letter-spacing:-0.02em;
+  opacity:0;animation:fadeUp 1s .55s ease forwards;
+}
+.hero h1 .dim{color:var(--gray)}
+.hero h1 .bx{color:var(--blue)}
+.hero-sub{
+  margin-top:26px;font-size:clamp(16px,1.6vw,19px);font-weight:300;color:var(--gray);max-width:620px;line-height:1.8;
+  opacity:0;animation:fadeUp 1s .8s ease forwards;
+}
+.hero-sub b{color:var(--white);font-weight:600}
+.hero-ctas{display:flex;gap:16px;margin-top:44px;opacity:0;animation:fadeUp 1s 1.05s ease forwards}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:15px;font-weight:600;padding:15px 32px;cursor:pointer;transition:.25s;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+}
+.btn-p{background:var(--blue);color:#fff;border:none}
+.btn-p:hover{filter:brightness(1.18)}
+.btn-g{background:transparent;color:var(--white);border:1px solid var(--line-strong)}
+.btn-g:hover{border-color:var(--gray);background:rgba(165,180,198,.08)}
+.btn .ar{font-family:var(--disp);transition:transform .25s}
+.btn:hover .ar{transform:translateX(4px)}
+.hero-foot{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;
+  border-top:1px solid var(--line);
+  background:rgba(12,12,12,.5);backdrop-filter:blur(8px);
+}
+.hero-foot .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.hero-foot span{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gray-dim)}
+.scroll-hint{display:flex;align-items:center;gap:10px;color:var(--gray-dim);font-size:12px;letter-spacing:.18em}
+.scroll-hint i{width:1px;height:26px;background:linear-gradient(var(--gray),transparent);display:block;animation:drop 1.8s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+/* ============ METRIC STRIP ============ */
+.metrics{padding:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--black-2)}
+.metric-grid{display:grid;grid-template-columns:repeat(6,1fr)}
+.metric{
+  padding:38px 20px;text-align:center;border-right:1px solid var(--line);position:relative;overflow:hidden;
+}
+.metric:last-child{border-right:none}
+.metric::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--blue);transform:scaleX(0);transition:transform .8s ease}
+.metric.in::before{transform:scaleX(1)}
+.metric .val{font-family:var(--disp);font-size:clamp(22px,2.6vw,34px);font-weight:900;letter-spacing:-0.02em;line-height:1.1}
+.metric .val small{font-size:.55em;font-weight:700;color:var(--gray)}
+.metric .lbl{margin-top:8px;font-size:12.5px;color:var(--gray-dim);letter-spacing:.02em}
+
+/* ============ ROBOS: 산업변화 ============ */
+.market-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:80px}
+.mcard{padding:34px 28px}
+.mcard .k{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:18px}
+.mcard .v{font-family:var(--disp);font-size:clamp(28px,3vw,40px);font-weight:900;letter-spacing:-0.02em}
+.mcard .v small{font-size:.5em;color:var(--gray)}
+.mcard p{margin-top:14px;font-size:13.5px;color:var(--gray);font-weight:300;line-height:1.6}
+.spark{margin-top:18px;height:30px}
+.spark polyline{fill:none;stroke:var(--blue);stroke-width:2;stroke-dasharray:200;stroke-dashoffset:200;transition:stroke-dashoffset 1.4s ease .3s}
+.spark polyline.down{stroke:var(--gray)}
+.in .spark polyline{stroke-dashoffset:0}
+
+/* 진화 4단계 */
+.evo{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-bottom:80px}
+.evo::before{content:"";position:absolute;top:33px;left:8%;right:8%;height:1px;background:var(--line-strong)}
+.evo-step{padding:0 22px;text-align:center;position:relative}
+.evo-step .node{
+  width:66px;height:66px;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--disp);font-weight:900;font-size:15px;color:var(--gray);
+  background:var(--black);border:1px solid var(--line-strong);position:relative;z-index:1;
+  clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);
+  transition:all .5s ease;
+}
+.evo-step h4{font-size:16px;font-weight:700;margin-bottom:8px;transition:color .5s}
+.evo-step p{font-size:13.5px;color:var(--gray-dim);font-weight:300;line-height:1.6}
+.evo-step.lit .node{border-color:var(--blue);color:#fff;background:var(--blue);box-shadow:0 0 34px rgba(31,81,255,.45)}
+.evo-step.lit h4{color:var(--white)}
+.evo-step:nth-child(-n+3).lit .node{background:var(--panel);color:var(--white);border-color:var(--gray);box-shadow:none}
+.evo-step:last-child.lit .node{background:var(--blue);border-color:var(--blue)}
+
+/* 문제 → ROBOS의 답 */
+.answer{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+.answer h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;line-height:1.4;margin-bottom:22px;letter-spacing:-0.02em}
+.answer h3 em{font-style:normal;color:var(--blue)}
+.answer p{color:var(--gray);font-weight:300;margin-bottom:16px;font-size:15.5px}
+.answer p b{color:var(--white);font-weight:600}
+.dxrxax{padding:44px 40px}
+.dxrxax .row{display:flex;align-items:center;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+.dxrxax .row:last-child{border-bottom:none}
+.dxrxax .code{
+  font-family:var(--disp);font-weight:900;font-size:20px;width:64px;flex-shrink:0;
+  color:var(--gray);transition:.3s;
+}
+.dxrxax .row:hover .code{color:var(--blue)}
+.dxrxax .tx b{display:block;font-size:15px;font-weight:700;margin-bottom:2px}
+.dxrxax .tx span{font-size:13.5px;color:var(--gray-dim);font-weight:300}
+
+/* 왜 로보스 */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.wcard{padding:40px 34px;display:flex;flex-direction:column;transition:border-color .3s}
+.wcard .pic{width:52px;height:52px;margin-bottom:26px;color:var(--blue)}
+.wcard .pic svg{width:100%;height:100%}
+.wcard h4{font-size:19px;font-weight:700;line-height:1.4;margin-bottom:14px;letter-spacing:-0.02em}
+.wcard p{font-size:14.5px;color:var(--gray);font-weight:300;flex:1}
+.badges{margin-top:24px;display:flex;flex-wrap:wrap;gap:8px}
+.badge{
+  font-size:11.5px;font-weight:600;letter-spacing:.03em;color:var(--gray);
+  border:1px solid var(--line-strong);padding:5px 12px;
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+}
+.badge.b{color:#fff;background:var(--blue);border-color:var(--blue)}
+
+/* ============ TECH ============ */
+#tech{background:var(--black-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tech-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:90px}
+.tcard{padding:44px 36px;position:relative;overflow:hidden;transition:.3s}
+.tcard .num{font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:.2em;color:var(--blue);margin-bottom:60px;display:block}
+.tcard h4{font-family:var(--disp);font-size:14px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-dim);margin-bottom:8px}
+.tcard h3{font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:16px;line-height:1.35}
+.tcard p{font-size:14.5px;color:var(--gray);font-weight:300}
+.tcard ul{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.tcard li{font-size:13.5px;color:var(--gray);padding-left:18px;position:relative;font-weight:300}
+.tcard li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:1.5px;background:var(--blue)}
+.tcard .glow{position:absolute;right:-40px;top:-40px;width:180px;height:180px;background:radial-gradient(circle,var(--blue-soft),transparent 70%);pointer-events:none;opacity:0;transition:opacity .4s}
+.tcard:hover .glow{opacity:1}
+
+/* 프로세스 5단계 */
+.process{margin-bottom:90px}
+.proc-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;position:relative}
+.proc-step{padding:26px 20px;text-align:center;position:relative}
+.proc-step .pi{width:44px;height:44px;margin:0 auto 16px;color:var(--gray);transition:color .4s}
+.proc-step .pi svg{width:100%;height:100%}
+.proc-step b{display:block;font-size:14px;font-weight:700;margin-bottom:4px}
+.proc-step span{font-size:12px;color:var(--gray-dim);font-weight:300;display:block;line-height:1.5}
+.proc-step .idx{position:absolute;top:12px;left:14px;font-family:var(--disp);font-size:11px;font-weight:700;color:var(--gray-dim)}
+.proc-step.lit .pi{color:var(--blue)}
+.proc-step::after{
+  content:"→";position:absolute;right:-14px;top:50%;transform:translateY(-50%);
+  font-family:var(--disp);color:var(--gray-dim);font-size:15px;z-index:2;
+}
+.proc-step:last-child::after{display:none}
+.loop-note{margin-top:18px;text-align:center;font-size:12.5px;color:var(--gray-dim);letter-spacing:.06em}
+.loop-note b{color:var(--blue);font-weight:700}
+
+/* 비교표 */
+.cmp{margin-bottom:90px;overflow-x:auto}
+.cmp table{width:100%;border-collapse:collapse;min-width:680px}
+.cmp th,.cmp td{padding:18px 24px;text-align:left;border-bottom:1px solid var(--line);font-size:14.5px}
+.cmp thead th{
+  font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gray-dim);border-bottom:1px solid var(--line-strong);padding-bottom:14px;
+}
+.cmp thead th.rb{color:var(--blue)}
+.cmp td:first-child{color:var(--gray);font-weight:500;width:26%}
+.cmp td.rb{color:var(--white);font-weight:700;position:relative}
+.cmp td.rb::before{content:"";position:absolute;left:0;top:20%;bottom:20%;width:2px;background:var(--blue);opacity:0;transition:opacity .6s}
+.cmp tr.in td.rb::before{opacity:1}
+.cmp td.cp{color:var(--gray-dim);font-weight:300}
+
+/* 플라이휠 */
+.fly-wrap{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.flywheel{position:relative;width:min(420px,88vw);height:min(420px,88vw);margin:0 auto}
+.fly-ring{position:absolute;inset:0;border:1px dashed var(--line-strong);border-radius:50%;animation:spin 40s linear infinite}
+.fly-core{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:132px;height:132px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  background:radial-gradient(circle at 35% 30%,#1a2030,var(--black) 75%);border:1px solid var(--line-strong);
+  font-family:var(--disp);font-weight:900;font-size:19px;
+  box-shadow:0 0 60px rgba(31,81,255,.18);
+  text-align:center;z-index:2;
+}
+.fly-core small{font-size:9.5px;font-weight:700;letter-spacing:.2em;color:var(--gray-dim)}
+.fly-rot{position:absolute;inset:0;animation:spin 40s linear infinite}
+.fly-node{
+  position:absolute;top:50%;left:50%;width:104px;margin:-30px 0 0 -52px;
+  text-align:center;animation:spinR 40s linear infinite;
+}
+.fly-node i{
+  display:flex;width:14px;height:14px;margin:0 auto 8px;background:var(--panel);
+  border:1.5px solid var(--gray);border-radius:50%;transition:.3s;
+}
+.fly-node span{font-size:12px;font-weight:600;color:var(--gray);display:block;line-height:1.4;background:rgba(12,12,12,.72);padding:4px 6px;border-radius:4px}
+.fly-node.hot i{background:var(--blue);border-color:var(--blue);box-shadow:0 0 16px rgba(31,81,255,.7)}
+.fly-node.hot span{color:var(--white)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinR{to{transform:rotate(-360deg)}}
+.fly-copy h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;letter-spacing:-0.02em;line-height:1.4;margin-bottom:20px}
+.fly-copy p{color:var(--gray);font-weight:300;font-size:15.5px;margin-bottom:16px}
+.fly-copy p b{color:var(--white);font-weight:600}
+.fly-stats{display:flex;gap:34px;margin-top:34px}
+.fly-stats .fs b{font-family:var(--disp);font-size:26px;font-weight:900;display:block}
+.fly-stats .fs b em{font-style:normal;color:var(--blue)}
+.fly-stats .fs span{font-size:12.5px;color:var(--gray-dim)}
+
+/* ============ BUSINESS ============ */
+.stage-rail{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:96px;counter-reset:st}
+.stage{
+  padding:36px 30px;position:relative;transition:transform .35s ease,border-color .35s;
+}
+.stage:hover{transform:translateY(-6px)}
+.stage .st-num{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--blue);display:block;margin-bottom:44px}
+.stage h4{font-size:20px;font-weight:800;margin-bottom:6px;letter-spacing:-0.02em}
+.stage .en-sub{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-dim);display:block;margin-bottom:16px}
+.stage p{font-size:13.5px;color:var(--gray);font-weight:300}
+.stage .arrow-next{position:absolute;top:50%;right:-13px;transform:translateY(-50%);color:var(--gray-dim);font-family:var(--disp);z-index:2}
+.stage:last-child .arrow-next{display:none}
+
+/* 제품 Overview */
+.pv-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:30px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.fbtn{
+  font-size:13.5px;font-weight:600;color:var(--gray);background:transparent;
+  border:1px solid var(--line-strong);padding:9px 20px;cursor:pointer;transition:.2s;
+  clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px);
+  font-family:var(--sans);
+}
+.fbtn:hover{color:var(--white)}
+.fbtn.on{background:var(--white);color:var(--black);border-color:var(--white);font-weight:700}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--gray-dim);align-items:center;flex-wrap:wrap}
+.legend i{width:9px;height:9px;display:inline-block;margin-right:6px;vertical-align:0}
+.legend .l1 i{background:var(--blue)}
+.legend .l2 i{background:var(--gray)}
+.legend .l3 i{background:transparent;border:1px solid var(--gray-dim)}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.pcard{padding:26px 24px;display:flex;flex-direction:column;min-height:220px;transition:transform .3s ease}
+.pcard:hover{transform:translateY(-4px)}
+.pcard .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:auto}
+.pcard .code{font-family:var(--disp);font-size:24px;font-weight:900;letter-spacing:-0.01em}
+.pcard.dev .code,.pcard.plan .code{color:var(--gray)}
+.pcard .st{
+  font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:4px 10px;white-space:nowrap;
+  clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px);
+}
+.st.sale{background:var(--blue);color:#fff}
+.st.done{background:var(--gray);color:var(--black)}
+.st.dev{background:rgba(165,180,198,.16);color:var(--gray)}
+.st.plan{background:transparent;color:var(--gray-dim);border:1px solid var(--line-strong)}
+.pcard .nm{font-size:14.5px;font-weight:600;margin:18px 0 3px;line-height:1.4}
+.pcard .yy{font-size:11.5px;color:var(--gray-dim);margin-bottom:14px}
+.pbar{height:3px;background:rgba(165,180,198,.14);position:relative;overflow:hidden}
+.pbar i{position:absolute;left:0;top:0;bottom:0;background:var(--blue);width:0;transition:width 1.1s ease .15s}
+.pcard.dev .pbar i{background:var(--gray)}
+.pcard.plan .pbar i{background:var(--gray-dim)}
+.pv-note{margin-top:22px;font-size:12.5px;color:var(--gray-dim)}
+.pv-note b{color:var(--gray);font-weight:600}
+
+/* ============ PERFORMANCE ============ */
+#performance{background:var(--black-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.perf-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:70px;align-items:center;margin-bottom:96px}
+.network{position:relative;width:100%;aspect-ratio:1.15}
+.network svg{width:100%;height:100%;overflow:visible}
+.net-line{stroke:var(--line-strong);stroke-width:1;stroke-dasharray:160;stroke-dashoffset:160;transition:stroke-dashoffset 1.3s ease}
+.in .net-line{stroke-dashoffset:0}
+.net-dot{fill:var(--gray);transition:.3s}
+.net-dot.pulse{animation:pulse 2.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.net-hub{fill:var(--blue)}
+.net-hub-ring{fill:none;stroke:var(--blue);stroke-width:1;opacity:.5;animation:ring 3s ease-out infinite}
+@keyframes ring{0%{transform:scale(.4);opacity:.8}100%{transform:scale(2.2);opacity:0}}
+.net-label{fill:var(--gray);font-size:10.5px;font-family:var(--sans);font-weight:500}
+.net-label.rg{fill:rgba(165,180,198,.5);font-size:9px}
+.perf-copy h3{font-size:clamp(24px,3vw,34px);font-weight:800;letter-spacing:-0.03em;line-height:1.35;margin-bottom:18px}
+.perf-copy h3 em{font-style:normal;color:var(--blue)}
+.perf-copy p{color:var(--gray);font-weight:300;font-size:15.5px}
+.perf-nums{display:flex;gap:40px;margin-top:36px}
+.perf-nums .pn b{font-family:var(--disp);font-size:34px;font-weight:900;display:block;letter-spacing:-0.02em}
+.perf-nums .pn b em{font-style:normal;font-size:.5em;color:var(--gray)}
+.perf-nums .pn span{font-size:12.5px;color:var(--gray-dim)}
+.awards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.award{padding:28px 22px;text-align:left}
+.award .yr{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--blue);display:block;margin-bottom:14px}
+.award .medal{width:34px;height:34px;margin-bottom:16px;color:var(--gray)}
+.award .medal svg{width:100%;height:100%}
+.award p{font-size:13px;font-weight:500;line-height:1.55}
+.award span{display:block;margin-top:6px;font-size:11.5px;color:var(--gray-dim);font-weight:300}
+
+/* ============ INVESTORS ============ */
+.ip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:96px}
+.ipcard{padding:38px 32px}
+.ipcard .no{font-family:var(--disp);font-size:13px;font-weight:900;color:var(--blue);display:block;margin-bottom:40px;letter-spacing:.16em}
+.ipcard h4{font-size:19px;font-weight:700;margin-bottom:12px;letter-spacing:-0.02em}
+.ipcard p{font-size:14px;color:var(--gray);font-weight:300}
+.fin{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:end;margin-bottom:96px}
+.chart{display:flex;align-items:flex-end;gap:8%;height:320px;padding:0 6px;border-bottom:1px solid var(--line-strong);position:relative}
+.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;position:relative}
+.bar .col{
+  width:100%;max-width:74px;background:linear-gradient(180deg,rgba(31,81,255,.95),rgba(31,81,255,.45));
+  height:0;transition:height 1.2s cubic-bezier(.25,.8,.3,1);position:relative;
+  clip-path:polygon(0 8px,8px 0,100% 0,100% 100%,0 100%);
+}
+.bar.target .col{background:repeating-linear-gradient(-45deg,rgba(165,180,198,.32) 0 6px,rgba(165,180,198,.1) 6px 12px);outline:1px dashed var(--gray-dim);outline-offset:-1px}
+.bar .v{font-family:var(--disp);font-weight:900;font-size:15.5px;margin-bottom:10px;opacity:0;transition:opacity .5s .9s}
+.bar.in .v{opacity:1}
+.bar .y{margin-top:12px;font-size:12.5px;color:var(--gray-dim);position:absolute;top:100%}
+.bar.target .v{color:var(--gray)}
+.fin-copy h3{font-size:clamp(22px,2.6vw,30px);font-weight:800;line-height:1.4;letter-spacing:-0.02em;margin-bottom:20px}
+.fin-copy h3 em{font-style:normal;color:var(--blue)}
+.fin-copy p{color:var(--gray);font-weight:300;font-size:15px;margin-bottom:14px}
+.fin-copy .note{font-size:12.5px;color:var(--gray-dim);margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+/* IPO roadmap */
+.roadmap{position:relative;padding-top:14px}
+.rm-line{position:absolute;top:38px;left:4%;right:4%;height:1px;background:var(--line-strong)}
+.rm-line i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--blue);transition:width 1.6s ease .2s}
+.roadmap.in .rm-line i{width:72%}
+.rm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.rm-step{padding-top:48px;position:relative;text-align:left;padding-left:8px;padding-right:8px}
+.rm-step::before{
+  content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);
+  width:13px;height:13px;background:var(--black);border:2px solid var(--gray);border-radius:50%;z-index:1;transition:.4s;
+}
+.rm-step.lit::before{background:var(--blue);border-color:var(--blue);box-shadow:0 0 18px rgba(31,81,255,.6)}
+.rm-card{padding:26px 24px;height:100%}
+.rm-card .ph{font-family:var(--disp);font-size:15px;font-weight:900;letter-spacing:.04em;margin-bottom:2px}
+.rm-card .tm{font-size:12px;color:var(--blue);font-weight:600;display:block;margin-bottom:14px}
+.rm-card p{font-size:13px;color:var(--gray);font-weight:300;margin-bottom:14px}
+.rm-card .as{display:flex;gap:18px}
+.rm-card .as b{font-family:var(--disp);font-size:19px;font-weight:900;display:block}
+.rm-card .as span{font-size:10.5px;color:var(--gray-dim);display:block}
+.rm-step.goal .rm-card{border:1px solid rgba(31,81,255,.4);background:linear-gradient(180deg,rgba(31,81,255,.12),var(--panel))}
+.gov{margin-top:96px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.gov .frame{padding:28px 26px}
+.gov h5{font-size:15px;font-weight:700;margin-bottom:8px}
+.gov h5 b{color:var(--blue);font-family:var(--disp);margin-right:8px}
+.gov p{font-size:13px;color:var(--gray-dim);font-weight:300}
+
+/* ============ COMPANY ============ */
+#company{background:var(--black-2);border-top:1px solid var(--line)}
+.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:96px}
+.vcard{padding:44px 36px;text-align:left;position:relative;overflow:hidden;transition:.3s}
+.vcard .big{font-family:var(--disp);font-size:44px;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px}
+.vcard .big em{font-style:normal;color:var(--blue)}
+.vcard .kr{font-size:14px;font-weight:700;color:var(--gray);display:block;margin-bottom:20px;letter-spacing:.3em}
+.vcard p{font-size:14px;color:var(--gray);font-weight:300;opacity:.85;transition:.3s}
+.vcard:hover p{opacity:1;color:var(--white)}
+/* timeline */
+.tl{position:relative;max-width:860px;margin:0 auto 0}
+.tl::before{content:"";position:absolute;left:110px;top:6px;bottom:6px;width:1px;background:var(--line-strong)}
+.tl-item{display:flex;gap:44px;padding:26px 0;position:relative}
+.tl-item .yr{
+  width:110px;flex-shrink:0;text-align:right;padding-right:44px;
+  font-family:var(--disp);font-weight:900;font-size:21px;color:var(--gray);transition:color .4s;
+}
+.tl-item::before{
+  content:"";position:absolute;left:110px;top:38px;transform:translateX(-50%);
+  width:9px;height:9px;border-radius:50%;background:var(--gray-dim);transition:.4s;
+}
+.tl-item.in::before{background:var(--blue);box-shadow:0 0 14px rgba(31,81,255,.7)}
+.tl-item.in .yr{color:var(--white)}
+.tl-item .bd b{display:block;font-size:16px;font-weight:700;margin-bottom:5px}
+.tl-item .bd b i{
+  font-style:normal;font-size:10.5px;font-weight:700;color:var(--blue);
+  border:1px solid rgba(31,81,255,.5);padding:2px 8px;margin-left:10px;vertical-align:2px;
+  clip-path:polygon(4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%,0 4px);
+}
+.tl-item .bd p{font-size:13.5px;color:var(--gray);font-weight:300}
+/* company info + news */
+.co-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:96px}
+.co-box{padding:40px 36px}
+.co-box h4{font-size:19px;font-weight:800;margin-bottom:24px;letter-spacing:-0.02em}
+.co-box h4 span{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:10px}
+.kv{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kv:last-of-type{border-bottom:none}
+.kv .k{color:var(--gray-dim);flex-shrink:0}
+.kv .v{text-align:right;font-weight:500}
+.news-item{display:block;padding:16px 0;border-bottom:1px solid var(--line);transition:.2s}
+.news-item:last-of-type{border-bottom:none}
+.news-item:hover .tt{color:var(--blue)}
+.news-item .mt{font-size:11.5px;color:var(--gray-dim);display:flex;gap:10px;margin-bottom:5px}
+.news-item .mt b{color:var(--gray);font-weight:600}
+.news-item .tt{font-size:14.5px;font-weight:600;line-height:1.5;transition:color .2s}
+.jobs{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.job{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border:1px solid var(--line-strong);transition:.2s;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+.job:hover{border-color:var(--gray);background:rgba(165,180,198,.06)}
+.job b{font-size:14.5px;font-weight:600}
+.job span{font-size:12px;color:var(--gray-dim)}
+.job .go{font-family:var(--disp);color:var(--blue)}
+
+/* ============ CTA BAND ============ */
+.cta-band{
+  padding:150px 0;text-align:center;position:relative;overflow:hidden;
+  border-top:1px solid var(--line);
+}
+.cta-band .beam{top:50%;height:260px;opacity:.8}
+.cta-band h2{
+  position:relative;font-family:var(--disp);
+  font-size:clamp(30px,5vw,58px);font-weight:900;letter-spacing:-0.02em;line-height:1.15;margin-bottom:16px;
+}
+.cta-band h2 .bx{color:var(--blue)}
+.cta-band p{position:relative;color:var(--gray);font-weight:300;margin-bottom:44px;font-size:17px}
+.cta-band .hero-ctas{justify-content:center;margin-top:0;opacity:1;animation:none;position:relative}
+
+/* ============ FOOTER ============ */
+footer{border-top:1px solid var(--line);background:var(--black);padding:70px 0 36px}
+.f-top{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:44px;margin-bottom:56px}
+.f-brand svg{height:20px;width:auto;margin-bottom:18px;display:block}
+.f-brand p{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gray-dim)}
+.f-col h6{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);margin-bottom:18px;font-family:var(--disp)}
+.f-col li{font-size:13.5px;color:var(--gray-dim);font-weight:300;margin-bottom:10px;line-height:1.6}
+.f-col li b{color:var(--gray);font-weight:600;display:block;font-size:12px;margin-bottom:2px}
+.f-col a:hover{color:var(--white)}
+.f-bot{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-top:28px;border-top:1px solid var(--line);flex-wrap:wrap}
+.f-bot p{font-size:12px;color:var(--gray-dim)}
+.f-sns{display:flex;gap:12px}
+.f-sns a{
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--line-strong);color:var(--gray);transition:.2s;
+  clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px);
+}
+.f-sns a:hover{color:#fff;border-color:var(--blue);background:var(--blue)}
+.f-sns svg{width:16px;height:16px}
+
+/* ============ Responsive ============ */
+@media (max-width:1080px){
+  .metric-grid{grid-template-columns:repeat(3,1fr)}
+  .metric:nth-child(3){border-right:none}
+  .metric{border-bottom:1px solid var(--line)}
+  .market-grid,.why-grid,.tech-tabs,.ip-grid{grid-template-columns:repeat(2,1fr)}
+  .pgrid{grid-template-columns:repeat(3,1fr)}
+  .awards{grid-template-columns:repeat(3,1fr)}
+  .proc-rail{grid-template-columns:repeat(3,1fr);gap:14px}
+  .proc-step::after{display:none}
+  .answer,.fly-wrap,.perf-grid,.fin{grid-template-columns:1fr;gap:50px}
+  .stage-rail,.rm-grid{grid-template-columns:repeat(2,1fr)}
+  .gov{grid-template-columns:1fr}
+  .f-top{grid-template-columns:1fr 1fr}
+  .co-grid{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  section{padding:90px 0}
+  .nav-links{display:none}
+  .menu-toggle{display:block;background:none;border:none;color:var(--white);margin-left:auto;cursor:pointer}
+  .nav-cta .lang{display:none}
+  .metric-grid{grid-template-columns:repeat(2,1fr)}
+  .metric:nth-child(odd){border-right:1px solid var(--line)}
+  .metric:nth-child(even){border-right:none}
+  .market-grid,.why-grid,.tech-tabs,.pgrid,.ip-grid,.stage-rail,.rm-grid,.value-grid{grid-template-columns:1fr}
+  .awards{grid-template-columns:repeat(2,1fr)}
+  .evo{grid-template-columns:repeat(2,1fr);gap:30px 0}
+  .evo::before{display:none}
+  .proc-rail{grid-template-columns:repeat(2,1fr)}
+  .tl::before{left:64px}
+  .tl-item{gap:26px}
+  .tl-item .yr{width:64px;padding-right:20px;font-size:16px}
+  .tl-item::before{left:64px}
+  .hero h1{font-size:clamp(38px,11vw,56px)}
+  .stage .arrow-next{display:none}
+  .f-top{grid-template-columns:1fr}
+}
+/* mobile nav drawer */
+.mnav{position:fixed;inset:72px 0 auto 0;z-index:99;background:rgba(12,12,12,.97);border-bottom:1px solid var(--line);display:none;flex-direction:column;padding:10px 0 20px}
+.mnav.open{display:flex}
+.mnav a{padding:14px 32px;font-size:16px;font-weight:600;color:var(--gray)}
+.mnav a:active{color:var(--white)}
+</style>
+</head>
+<body>
+
+<!-- ================= GNB ================= -->
+<header id="gnb">
+  <nav class="nav">
+    <a class="logo" href="#top" aria-label="ROBOS">
+      <svg viewBox="0 0 344 64" fill="#F1F4FA" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M0 64 V0 H56 V64 H42 V14 H14 V64 Z"/>
+        <path fill-rule="evenodd" d="M72 0 H128 V64 H72 Z M86 14 H114 V50 H86 Z"/>
+        <path fill-rule="evenodd" d="M144 0 H200 V64 H144 Z M158 14 H186 V50 H158 Z M200 0 L200 18 L178 0 Z"/>
+        <path fill-rule="evenodd" d="M216 0 H272 V64 H216 Z M230 14 H258 V50 H230 Z"/>
+        <path d="M344 0 V14 H302 V25 H344 V64 H288 V50 H330 V39 H288 V0 Z"/>
+      </svg>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#robos">ROBOS</a></li>
+      <li><a href="#tech">기술</a></li>
+      <li><a href="#business">사업</a></li>
+      <li><a href="#performance">성과</a></li>
+      <li><a href="#investors">투자정보</a></li>
+      <li><a href="#company">회사</a></li>
+    </ul>
+    <div class="nav-cta">
+      <span class="lang en"><b>KOR</b> / EN</span>
+      <a class="btn-ir" href="mailto:ir@robos.one">IR 문의</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="메뉴">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+<div class="mnav" id="mnav">
+  <a href="#robos">ROBOS</a><a href="#tech">기술</a><a href="#business">사업</a>
+  <a href="#performance">성과</a><a href="#investors">투자정보</a><a href="#company">회사</a>
+</div>
+
+<!-- ================= ① HERO ================= -->
+<section class="hero" id="top">
+  <canvas id="lidar"></canvas>
+  <div class="beam"></div>
+  <div class="wrap hero-inner">
+    <h1>In the Dark,<br><span class="dim">We Are</span> <span class="bx">the Light</span></h1>
+    <p class="hero-sub">
+      어둠 속에서, 우리가 그 빛이 됩니다.<br>
+      <b>비정형 생체 AI와 로봇</b>으로, ROBOS는 자동화가 닿지 못한 3D 산업에 빛을 비춥니다.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn btn-p" href="#tech">ROBOS의 기술 보기 <span class="ar">→</span></a>
+      <a class="btn btn-g" href="#investors">IR 정보 보기 <span class="ar">→</span></a>
+    </div>
+  </div>
+  <div class="hero-foot">
+    <div class="wrap">
+      <span>Robotics and AI System Platform Leader</span>
+      <span class="scroll-hint en">SCROLL <i></i></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ② METRIC STRIP ================= -->
+<div class="metrics">
+  <div class="metric-grid">
+    <div class="metric rv"><div class="val en"><span class="cnt" data-to="99.98" data-dec="2">0</span><small>%</small></div><div class="lbl">가동률 Uptime</div></div>
+    <div class="metric rv"><div class="val en"><small>&lt;</small><span class="cnt" data-to="100">0</span><small>ms</small></div><div class="lbl">이미지 처리 속도</div></div>
+    <div class="metric rv"><div class="val en"><span class="cnt" data-to="450">0</span><small>두/h</small></div><div class="lbl">시간당 처리 속도</div></div>
+    <div class="metric rv"><div class="val en"><small>±</small><span class="cnt" data-to="0.15" data-dec="2">0</span><small>mm</small></div><div class="lbl">반복 정밀도</div></div>
+    <div class="metric rv"><div class="val en"><span class="cnt" data-to="22">0</span><small>대 · 9개사</small></div><div class="lbl">누적 판매 실적</div></div>
+    <div class="metric rv"><div class="val en"><span class="cnt" data-to="28000">0</span><small>+</small></div><div class="lbl">일일 학습 데이터(건)</div></div>
+  </div>
+</div>
+
+<!-- ================= ③④ ROBOS ================= -->
+<section id="robos">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-label">Why ROBOS</div>
+      <h2 class="sec-title">비정형의 자동화,<br>제조의 마지막 관문</h2>
+      <p class="sec-desc">표준화의 미답지(未踏地)였던 '비정형 생체' 영역까지 — ROBOS는 데이터와 로봇, AI로 자동화하는 시대를 열어갑니다.</p>
+    </div>
+
+    <!-- 시장 배경 4카드 -->
+    <div class="market-grid">
+      <div class="mcard frame rv">
+        <div class="k">Demand · 국내 수요</div>
+        <div class="v en"><span class="cnt" data-to="65.4" data-dec="1">0</span><small> kg</small></div>
+        <p>1인당 연간 육류 소비량 전망(2033) — 약 20년간 +84%</p>
+        <svg class="spark" viewBox="0 0 120 30" preserveAspectRatio="none"><polyline points="0,26 20,24 40,20 60,17 80,12 100,8 120,3"/></svg>
+      </div>
+      <div class="mcard frame rv">
+        <div class="k">Labor · 국내 노동</div>
+        <div class="v en"><span class="cnt" data-to="3342">0</span><small> 만 명</small></div>
+        <p>생산연령인구 전망(2032) — 10년간 -332만, 현장 인력난 심화</p>
+        <svg class="spark" viewBox="0 0 120 30" preserveAspectRatio="none"><polyline class="down" points="0,4 20,7 40,11 60,15 80,20 100,23 120,27"/></svg>
+      </div>
+      <div class="mcard frame rv">
+        <div class="k">Global · 시장</div>
+        <div class="v en"><small>$</small><span class="cnt" data-to="11">0</span><small> B</small></div>
+        <p>육·가금·수산 자동화 시장 전망(2030) — 전환 가속</p>
+        <svg class="spark" viewBox="0 0 120 30" preserveAspectRatio="none"><polyline points="0,27 20,25 40,21 60,16 80,11 100,6 120,2"/></svg>
+      </div>
+      <div class="mcard frame rv">
+        <div class="k">Hub · 거점화</div>
+        <div class="v en"><span class="cnt" data-to="66">0</span><small> 개소</small></div>
+        <p>도축장 통폐합·거점화(9년 -15%) — 신규·리모델링과 함께 로봇 수요 증대</p>
+        <svg class="spark" viewBox="0 0 120 30" preserveAspectRatio="none"><polyline class="down" points="0,6 20,9 40,12 60,16 80,19 100,23 120,26"/></svg>
+      </div>
+    </div>
+
+    <!-- 제조업 진화 4단계 -->
+    <div class="evo" id="evo">
+      <div class="evo-step rv"><div class="node en">M</div><h4>Manual · 수작업</h4><p>사람의 숙련과 경험에 의존해 공정이 운영되던 시대입니다.</p></div>
+      <div class="evo-step rv"><div class="node en">DX</div><h4>DX · 디지털 전환</h4><p>공정을 데이터로 기록하고 분석합니다. 보이지 않던 현장이 숫자로 보입니다.</p></div>
+      <div class="evo-step rv"><div class="node en">RX</div><h4>RX · 로봇 전환</h4><p>위험하고 힘든 반복 작업을 로봇이 대신합니다.</p></div>
+      <div class="evo-step rv"><div class="node en">AX</div><h4>AX · AI 전환</h4><p>AI가 스스로 판단하고 공정 전체를 최적화합니다. 공장이 '생각'하기 시작합니다.</p></div>
+    </div>
+
+    <!-- 문제 제기 → ROBOS의 답 -->
+    <div class="answer">
+      <div class="rv">
+        <h3>제조업의 진화가 닿지 못한 영역,<br><em>ROBOS는 바로 그곳에서 출발합니다</em></h3>
+        <p>도축·육가공은 개체마다 형상과 무게가 모두 다른 <b>'비정형 생체'</b>를 다루기 때문에, 완전한 표준화와 자동화가 가장 늦게 도착하는 산업으로 남아 있었습니다.</p>
+        <p>ROBOS는 비정형 생체 데이터를 수집·학습하고<b>(DX)</b>, 정밀제어 로봇으로 구현하며<b>(RX)</b>, AI가 실시간으로 판단·제어하는 단계<b>(AX)</b>까지 실현합니다. 숙련 인력의 고령화로 깊어지는 인력난을 해소하고, 위생과 안전 수준을 높여 더 건강한 육류 소비 문화를 만들어 갑니다.</p>
+      </div>
+      <div class="dxrxax frame rv">
+        <div class="row"><span class="code en">DX</span><div class="tx"><b>데이터 전환 — Define</b><span>비정형 생체 데이터의 수집·학습, 기술 기반의 일관된 정의</span></div></div>
+        <div class="row"><span class="code en">RX</span><div class="tx"><b>로봇 전환 — eXecute</b><span>정밀제어 로봇으로 구조 단위 실행, 즉시 현장 반영</span></div></div>
+        <div class="row"><span class="code en">AX</span><div class="tx"><b>AI 전환 — eXpand</b><span>실시간 판단·제어, 산업의 경계를 넘는 확장</span></div></div>
+      </div>
+    </div>
+
+    <!-- 왜 로보스 3카드 -->
+    <div style="margin-top:110px">
+      <div class="sec-head rv">
+        <div class="sec-label">Only One</div>
+        <h2 class="sec-title">국내 유일의 상용화 실적을 가진<br>도축 자동화 AI 로봇 기업</h2>
+        <p class="sec-desc">폐쇄적이고 인력 중심이던 도축 산업 현장에, ROBOS는 독보적인 비정형 생체 데이터(DX)와 로봇(RX), AI(AX) 시스템을 도입하고 있습니다.</p>
+      </div>
+      <div class="why-grid">
+        <div class="wcard frame rv">
+          <div class="pic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="10" width="36" height="24" rx="2"/><circle cx="24" cy="22" r="6"/><circle cx="24" cy="22" r="2" fill="currentColor"/><path d="M14 40h20M24 34v6"/></svg></div>
+          <h4>Vision AI 도축 자동화 로봇 상용화</h4>
+          <p>국내 도축 현장의 실제 데이터로 Vision AI 모델과 자동화 로봇을 개발해, 전국 주요 고객사에 20대 이상을 공급·가동하고 있습니다. 상용화 이후 국내 시장에서 글로벌 경쟁사의 판매 실적은 없습니다.</p>
+          <div class="badges"><span class="badge b">도축 현장 상용화 완료</span><span class="badge">국내 점유율 1위</span></div>
+        </div>
+        <div class="wcard frame rv">
+          <div class="pic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 36V22l16-10 16 10v14"/><path d="M8 22l16 10 16-10"/><path d="M24 32v10"/><circle cx="24" cy="12" r="3"/></svg></div>
+          <h4>DX → RX → AX 풀스택 기술 내재화</h4>
+          <p>데이터 파이프라인(DX)부터 정밀제어 로봇(RX), 실시간 판단·제어 AI(AX)까지 전 단계를 자체 개발·통합합니다.</p>
+          <div class="badges"><span class="badge b">독자 기술 체계 보유</span></div>
+        </div>
+        <div class="wcard frame rv">
+          <div class="pic"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="24" cy="24" r="7"/><path d="M24 4v6M24 38v6M4 24h6M38 24h6M10 10l4.5 4.5M33.5 33.5L38 38M38 10l-4.5 4.5M14.5 33.5L10 38"/></svg></div>
+          <h4>검증된 기술의 확장성</h4>
+          <p>육류 자율제조에서 검증한 기술을 농식품 수확, 바이오 무인 실험 등 인접 산업으로 확장합니다.</p>
+          <div class="badges"><span class="badge b">플랫폼형 성장 구조</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ⑤ TECH ================= -->
+<section id="tech">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-label">Technology</div>
+      <h2 class="sec-title">인식 · 제어 · 통합 —<br>기업가치를 만드는 기술 3축</h2>
+      <p class="sec-desc">형태가 달라도 AI는 이해하고, 로봇은 스스로 판단하며, 데이터가 쌓일수록 시스템은 강해집니다.</p>
+    </div>
+
+    <div class="tech-tabs">
+      <div class="tcard frame rv">
+        <div class="glow"></div>
+        <span class="num en">01 / RECOGNITION</span>
+        <h4>생체인식 AI</h4>
+        <h3>형태가 달라도,<br>AI는 이해합니다</h3>
+        <p>형태와 상태가 일정하지 않은 비정형 생체를 AI가 이해하고, 품질 평가와 로봇 제어까지 연결하는 확장형 생체인식 AI 기술.</p>
+        <ul>
+          <li>수증기·혈액·조명 편차 환경에서도 손상 이미지 복원·객체 분리 선별</li>
+          <li>인식 정보를 절개 위치·접근 각도 등 로봇 제어값으로 변환</li>
+          <li>현장에서 매일 2.8만 건+ 데이터를 학습 자원으로 환류</li>
+        </ul>
+      </div>
+      <div class="tcard frame rv">
+        <div class="glow"></div>
+        <span class="num en">02 / CONTROL</span>
+        <h4>지능형 로봇</h4>
+        <h3>스스로 판단하고,<br>정밀하게 움직입니다</h3>
+        <p>비정형 생체 인식 알고리즘으로 목표를 산출하고, 고난이도 작업을 정밀하게 수행하는 지능형 로봇·휴머노이드 기술.</p>
+        <ul>
+          <li>자율 모션 플래닝 &amp; 실시간 제어</li>
+          <li>힘+위치 하이브리드 제어로 생체 손상 최소화</li>
+          <li>최대 500kg 고중량 지육 대응 — 국내 유일 · 방수·위생 특화 설계</li>
+        </ul>
+      </div>
+      <div class="tcard frame rv">
+        <div class="glow"></div>
+        <span class="num en">03 / INTEGRATION</span>
+        <h4>데이터 플랫폼</h4>
+        <h3>데이터가 쌓일수록,<br>AI는 강해집니다</h3>
+        <p>현장의 생체 데이터를 수집·정제·학습·재배포하며 AI 성능을 지속적으로 높이는 데이터 플라이휠 플랫폼.</p>
+        <ul>
+          <li>현장 직결 데이터 파이프라인</li>
+          <li>운영모델 기반의 독점적 데이터 축적 구조</li>
+          <li>재학습·배포 루프 — 견고한 Data Moat</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 프로세스 5단계 -->
+    <div class="process">
+      <div class="sec-head rv" style="margin-bottom:40px">
+        <h3 style="font-size:clamp(20px,2.4vw,26px);font-weight:800;letter-spacing:-0.02em">해부학적 좌표연산 파이프라인</h3>
+        <p class="sec-desc" style="font-size:15px">스캔에서 재학습까지 — 인식과 제어가 하나로 이어지는 통합 구조입니다.</p>
+      </div>
+      <div class="proc-rail" id="proc">
+        <div class="proc-step frame rv"><span class="idx en">01</span><div class="pi"><svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 22h32M22 6v32" opacity=".3"/><path d="M8 14l28 16M8 30l28-16" opacity=".5"/><circle cx="22" cy="22" r="16"/><circle cx="22" cy="22" r="2.5" fill="currentColor"/></svg></div><b>LiDAR 스캔</b><span>비정형 생체의<br>3D 형상 측정</span></div>
+        <div class="proc-step frame rv"><span class="idx en">02</span><div class="pi"><svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 6l14 8v16l-14 8-14-8V14z"/><path d="M22 6v16m0 0l14-8m-14 8L8 14" opacity=".5"/></svg></div><b>3D 데이터 변환</b><span>포인트 클라우드<br>구조화</span></div>
+        <div class="proc-step frame rv"><span class="idx en">03</span><div class="pi"><svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="14" cy="14" r="4"/><circle cx="32" cy="18" r="4"/><circle cx="20" cy="32" r="4"/><path d="M17 17l12-1M16 18l3 10M29 21l-7 8" opacity=".6"/></svg></div><b>해부학적 좌표연산</b><span>절개·파지 위치의<br>정밀 산출</span></div>
+        <div class="proc-step frame rv"><span class="idx en">04</span><div class="pi"><svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 38v-8l8-6 4-10 8-4 4 6-6 8-10 4-4 10z"/><circle cx="34" cy="14" r="3"/></svg></div><b>로봇 제어값 생성</b><span>경로·각도·힘의<br>실시간 제어</span></div>
+        <div class="proc-step frame rv"><span class="idx en">05</span><div class="pi"><svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M36 22a14 14 0 1 1-4-9.8"/><path d="M36 8v6h-6"/></svg></div><b>결과 재학습</b><span>공정 결과의<br>모델 환류</span></div>
+      </div>
+      <p class="loop-note rv en">RECOGNITION → CONTROL → <b>RE:LEARN</b> — CLOSED LOOP SYSTEM</p>
+    </div>
+
+    <!-- 경쟁 비교표 -->
+    <div class="cmp rv">
+      <div class="sec-head" style="margin-bottom:36px">
+        <h3 style="font-size:clamp(20px,2.4vw,26px);font-weight:800;letter-spacing:-0.02em">경쟁 우위 — 숫자로 증명합니다</h3>
+      </div>
+      <table>
+        <thead><tr><th>구분</th><th class="rb en">ROBOS</th><th>글로벌 경쟁사</th></tr></thead>
+        <tbody>
+          <tr class="rv"><td>핵심 기술</td><td class="rb">딥러닝 AI + 직접 개발 H/W</td><td class="cp">머신 비전 + SI 외주</td></tr>
+          <tr class="rv"><td>학습 방식</td><td class="rb">능동적 자율 학습</td><td class="cp">알고리즘 기반 정적 제어</td></tr>
+          <tr class="rv"><td>가동률 (Uptime)</td><td class="rb en">99.98%</td><td class="cp en">94~97%</td></tr>
+          <tr class="rv"><td>이미지 처리 속도</td><td class="rb en">100ms / 1개</td><td class="cp en">1,000ms / 1개</td></tr>
+          <tr class="rv"><td>이미지 처리 기능</td><td class="rb">손상 이미지 복원 · 객체 분리 선별</td><td class="cp">손상 미처리 · 객체 분리 불가</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 데이터 플라이휠 -->
+    <div class="fly-wrap">
+      <div class="flywheel rv" id="flywheel">
+        <div class="fly-ring"></div>
+        <div class="fly-rot" id="flyRot"></div>
+        <div class="fly-core en">DATA<br>FLYWHEEL<small>SELF-REINFORCING</small></div>
+      </div>
+      <div class="fly-copy rv">
+        <div class="sec-label">Data Moat</div>
+        <h3>멈추지 않는 선순환 —<br>데이터 플라이휠</h3>
+        <p>현장 운영에서 수집된 데이터가 정제·라벨링을 거쳐 재학습되고, 개선된 모델이 다시 현장에 배포됩니다. <b>데이터와 모델이 상호작용하며 성능이 계속 좋아지는 선순환 구조</b>입니다.</p>
+        <p>국내 도축 현장을 독점적으로 운영하며 축적하는 비정형 생체 데이터는, 후발 주자가 따라올 수 없는 ROBOS의 해자(Moat)입니다.</p>
+        <div class="fly-stats">
+          <div class="fs"><b class="en"><em>2.8만+</em></b><span>일일 학습 데이터(건)</span></div>
+          <div class="fs"><b class="en">9<em>개사</em></b><span>현장 데이터 소스</span></div>
+          <div class="fs"><b class="en">24<em>/7</em></b><span>상시 수집·환류</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ⑥ BUSINESS ================= -->
+<section id="business">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-label">Business</div>
+      <h2 class="sec-title">단품에서 확장성장으로 —<br>4단계 확장 구조</h2>
+      <p class="sec-desc">검증된 로봇 단품에서 출발해 가공, 분류, 포장으로 공장 전체의 솔루션, 직접 운영, 그리고 산업의 경계를 넘어 확장의 가치를 실현하고 있습니다.</p>
+    </div>
+
+    <div class="stage-rail">
+      <div class="stage frame rv"><span class="st-num en">STAGE 1</span><h4>AI 도축·육가공</h4><span class="en-sub en">Unit Sales</span><p>검증된 도축 자동화 AI 로봇을 공정 단위로 공급합니다. 더 안전하게, 더 많이, 더 똑똑하게.</p><span class="arrow-next en">→</span></div>
+      <div class="stage frame rv"><span class="st-num en">STAGE 2</span><h4>스마트팩토리</h4><span class="en-sub en">Solution Sales</span><p>로봇을 묶어 공장 전체를 자동화하는 솔루션. 공장이 스스로 생각하고, 진화합니다. 전국 7개 거점 목표.</p><span class="arrow-next en">→</span></div>
+      <div class="stage frame rv"><span class="st-num en">STAGE 3</span><h4>자가운영모델</h4><span class="en-sub en">Own &amp; Operate</span><p>SPC모델 등을 통해 ROBOS가 직접 운영하며 기술·수익 구조를 증명합니다. 2027 국내 도입 → 턴키 수출.</p><span class="arrow-next en">→</span></div>
+      <div class="stage frame rv"><span class="st-num en">STAGE 4</span><h4>분야확장</h4><span class="en-sub en">eXpand</span><p>검증된 기술은 스마트팜 · Farm to Table · 글로벌 등 산업의 경계를 넘습니다.</p></div>
+    </div>
+
+    <!-- 제품 Overview -->
+    <div class="pv-head rv">
+      <div>
+        <div class="sec-label">Product Overview</div>
+        <h3 style="font-size:clamp(22px,2.8vw,32px);font-weight:800;letter-spacing:-0.02em">검증된 제품 라인업 — 9종</h3>
+      </div>
+      <div>
+        <div class="filters" id="filters">
+          <button class="fbtn on" data-f="all">전체 9</button>
+          <button class="fbtn" data-f="pig">돼지 6</button>
+          <button class="fbtn" data-f="cattle">소 2</button>
+          <button class="fbtn" data-f="meat">육가공 1</button>
+        </div>
+        <div class="legend" style="margin-top:12px">
+          <span class="l1"><i></i>상용화</span>
+          <span class="l2"><i></i>개발완료</span>
+        </div>
+      </div>
+    </div>
+    <div class="pgrid" id="pgrid"></div>
+    <p class="pv-note rv">상용화 7종(PNC · PBO · PBD · PSP · PWC · CSP · CWC)은 개별 제품 상세 페이지로 순차 오픈됩니다. <b>진행바는 개발 단계를 나타냅니다.</b></p>
+  </div>
+</section>
+
+<!-- ================= ⑦ PERFORMANCE ================= -->
+<section id="performance">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-label">Track Record</div>
+      <h2 class="sec-title">전국 9개 고객사가 선택한 ROBOS</h2>
+      <p class="sec-desc">ROBOS의 도축 자동화 AI 로봇은 지금 이 순간에도 전국 현장에서 가동되고 있습니다.</p>
+    </div>
+
+    <div class="perf-grid">
+      <div class="network rv" id="network">
+        <svg viewBox="0 0 500 435" id="netSvg"></svg>
+      </div>
+      <div class="perf-copy rv">
+        <h3>숫자로 증명하는 기술력,<br><em>이름으로 증명하는 신뢰</em></h3>
+        <p>제주에서 강원까지 — 2023년 제주양돈농협 최초 도입 이후, 전국 주요 도축·육가공 거점에 누적 22대의 로봇이 공급되어 가동 중입니다.</p>
+        <div class="perf-nums">
+          <div class="pn"><b class="en"><span class="cnt" data-to="9">0</span><em>개사</em></b><span>전국 고객사</span></div>
+          <div class="pn"><b class="en"><span class="cnt" data-to="22">0</span><em>대</em></b><span>누적 판매</span></div>
+          <div class="pn"><b class="en"><span class="cnt" data-to="7">0</span><em>종</em></b><span>상용화 제품</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-head rv" style="margin-bottom:36px">
+      <h3 style="font-size:clamp(20px,2.4vw,26px);font-weight:800;letter-spacing:-0.02em">함께 만드는 산업의 다음 기준</h3>
+      <p class="sec-desc" style="font-size:15px">정부 포상과 산업 어워드가 ROBOS의 기술과 방향을 검증합니다.</p>
+    </div>
+    <div class="awards">
+      <div class="award frame rv"><span class="yr en">2025.11</span><div class="medal"><svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="17" cy="13" r="8"/><path d="M12 19l-3 11 8-5 8 5-3-11"/></svg></div><p>산업통상자원부 장관 표창</p><span>기계·로봇산업발전 유공 정부 포상</span></div>
+      <div class="award frame rv"><span class="yr en">2025.07</span><div class="medal"><svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 5h16v8a8 8 0 1 1-16 0z"/><path d="M9 7H4v3a5 5 0 0 0 5 5M25 7h5v3a5 5 0 0 1-5 5M13 29h8M17 21v8"/></svg></div><p>AFPRO AWARDS 대상</p><span>애그·푸드테크 로보틱스</span></div>
+      <div class="award frame rv"><span class="yr en">2025.07</span><div class="medal"><svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="17" cy="13" r="8"/><path d="M12 19l-3 11 8-5 8 5-3-11"/></svg></div><p>농림축산식품부 장관상</p><span>축산 자동화 기술 혁신</span></div>
+      <div class="award frame rv"><span class="yr en">2024.10</span><div class="medal"><svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="17" cy="13" r="8"/><path d="M12 19l-3 11 8-5 8 5-3-11"/></svg></div><p>중소벤처기업부 장관상</p><span>세계한인비즈니스대회</span></div>
+      <div class="award frame rv"><span class="yr en">2023.10</span><div class="medal"><svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="17" cy="13" r="8"/><path d="M12 19l-3 11 8-5 8 5-3-11"/></svg></div><p>농림축산식품부 장관상</p><span>농식품창업컨테스트</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ⑧ INVESTORS ================= -->
+<section id="investors">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-label">Investor Relations</div>
+      <h2 class="sec-title">왜 지금, ROBOS인가</h2>
+      <p class="sec-desc">기술특례 상장(IPO)을 준비하는 ROBOS의 투자 포인트와 성장 로드맵입니다.</p>
+    </div>
+
+    <div class="ip-grid">
+      <div class="ipcard frame rv"><span class="no en">POINT 01</span><h4>기술 차별화</h4><p>비정형 생체 인식 AI + 정밀제어 로봇의 풀스택 내재화. 가동률 99.98%, 처리속도 100ms — 글로벌 경쟁사를 정량으로 앞서는 독자 기술 체계.</p></div>
+      <div class="ipcard frame rv"><span class="no en">POINT 02</span><h4>성장 시나리오</h4><p>단품 → 솔루션 → 자가운영 → 확장의 4단계 성장 구조. 도축 자동화에서 검증된 기술이 스마트팜·글로벌로 확장됩니다.</p></div>
+      <div class="ipcard frame rv"><span class="no en">POINT 03</span><h4>수익 안정성</h4><p>전국 9개사 누적 22대의 상용 실적과 반복 구매 구조. 데이터 축적이 만드는 진입장벽이 장기 수익성을 지지합니다.</p></div>
+    </div>
+
+    <!-- 재무: 매출 추이 -->
+    <div class="fin">
+      <div>
+        <div class="chart rv" id="chart">
+          <div class="bar" data-h="7"><span class="v en">12.3</span><div class="col"></div><span class="y en">2022</span></div>
+          <div class="bar" data-h="8"><span class="v en">13.6</span><div class="col"></div><span class="y en">2023</span></div>
+          <div class="bar" data-h="11"><span class="v en">18.5</span><div class="col"></div><span class="y en">2024</span></div>
+          <div class="bar" data-h="27"><span class="v en">45.1</span><div class="col"></div><span class="y en">2025</span></div>
+          <div class="bar target" data-h="100"><span class="v en">170 <small>목표</small></span><div class="col"></div><span class="y en">2026E</span></div>
+        </div>
+      </div>
+      <div class="fin-copy rv">
+        <div class="sec-label">Financial</div>
+        <h3>가파른 성장 곡선 —<br>매출 추이 <em>(억 원)</em></h3>
+        <p>2022년 12.3억에서 2025년 45.1억까지, 상용화 라인업 확장과 함께 매출이 성장했습니다. 2026년은 스마트팩토리 전환과 함께 170억을 목표로 합니다.</p>
+        <p class="note">· 2026년은 목표치이며 실적과 시각적으로 구분해 표기합니다.<br>· 상장 준비: 기술특례 상장(IPO) 본격화(2026~)</p>
+      </div>
+    </div>
+
+    <!-- IPO 로드맵 -->
+    <div class="sec-head rv" style="margin-bottom:44px">
+      <h3 style="font-size:clamp(20px,2.4vw,26px);font-weight:800;letter-spacing:-0.02em">IPO 로드맵 — 성장 단계 × 기술 자산</h3>
+    </div>
+    <div class="roadmap rv" id="roadmap">
+      <div class="rm-line"><i></i></div>
+      <div class="rm-grid">
+        <div class="rm-step rv"><div class="rm-card frame"><div class="ph en">Series A</div><span class="tm en">2022 – 2023</span><p>창업 · 첫 상용화</p><div class="as"><div><b class="en">3<small>종</small></b><span>로봇/AI</span></div><div><b class="en">5<small>종</small></b><span>특허</span></div></div></div></div>
+        <div class="rm-step rv"><div class="rm-card frame"><div class="ph en">Series B</div><span class="tm en">2024 – 2025</span><p>라인업 확장 · 스케일업</p><div class="as"><div><b class="en">9<small>종</small></b><span>로봇/AI</span></div><div><b class="en">16<small>종</small></b><span>특허</span></div></div></div></div>
+        <div class="rm-step rv"><div class="rm-card frame"><div class="ph en">Pre-IPO</div><span class="tm en">2026</span><p>스마트팩토리 전환</p><div class="as"><div><b class="en">15<small>종</small></b><span>로봇/AI</span></div><div><b class="en">25<small>종</small></b><span>특허</span></div></div></div></div>
+        <div class="rm-step goal rv"><div class="rm-card frame"><div class="ph en" style="color:#6E8CFF">IPO</div><span class="tm en">2027 목표</span><p>기술특례 상장</p><div class="as"><div><b class="en">20<small>종+</small></b><span>로봇/AI</span></div><div><b class="en">30<small>종+</small></b><span>특허</span></div></div></div></div>
+      </div>
+    </div>
+
+    <!-- 관리 체계 -->
+    <div class="gov">
+      <div class="frame rv"><h5><b class="en">ERP</b>전사 자원 관리</h5><p>전사 ERP 기반의 투명한 관리 회계 체계를 운영합니다.</p></div>
+      <div class="frame rv"><h5><b class="en">ISO</b>국제 표준 인증</h5><p>품질·안전 국제 표준에 기반한 개발·생산 프로세스를 갖췄습니다.</p></div>
+      <div class="frame rv"><h5><b class="en">ESG</b>지속가능 경영</h5><p>위생·안전·노동환경 개선이 곧 ROBOS의 사업이자 ESG입니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 회사 ================= -->
+<section id="company">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="sec-label">Company</div>
+      <h2 class="sec-title en" style="letter-spacing:-0.01em">In the Dark, We are <span style="color:var(--blue)">the Light</span></h2>
+      <p class="sec-desc">어둠 속에서, 우리가 그 빛이 됩니다. 2022년 설립 이후, ROBOS는 비정형 산업을 Data로 재정의하여, 산업에 지속생존이라는 빛을 비추고 있습니다.</p>
+    </div>
+
+    <!-- 핵심가치 -->
+    <div class="value-grid">
+      <div class="vcard frame rv"><div class="big en"><em>D</em>efine</div><span class="kr">정 의</span><p>비정형 생체를 이해하기 위한 기술 기반 판단. 상황이 달라져도 일관되게 적용되는 기술적 정의로 유효한 데이터를 확보합니다.</p></div>
+      <div class="vcard frame rv"><div class="big en">e<em>X</em>ecute</div><span class="kr">실 행</span><p>로봇 단품이 아닌 구조 단위의 실행. 데이터를 축적하고 AI 시스템을 유연하게 적용하며, 새로운 판단은 즉시 실행으로 반영합니다.</p></div>
+      <div class="vcard frame rv"><div class="big en">e<em>X</em>pand</div><span class="kr">확 장</span><p>기술적 정의로 산업군에 일관된 기준을 정립하고, 솔루션·시스템 구조 단위를 다양한 3D 비정형 산업군으로 확장합니다.</p></div>
+    </div>
+
+    <!-- 연혁 -->
+    <div class="sec-head rv" style="margin-bottom:40px;text-align:center">
+      <h3 style="font-size:clamp(20px,2.4vw,26px);font-weight:800;letter-spacing:-0.02em">기준을 만들어 온 시간</h3>
+    </div>
+    <div class="tl">
+      <div class="tl-item rv"><div class="yr en">2022</div><div class="bd"><b>ROBOS 설립 <i>창업</i></b><p>비정형 생체 AI 로봇 개발 착수(4월) · Seed·Pre-A 투자 유치</p></div></div>
+      <div class="tl-item rv"><div class="yr en">2023</div><div class="bd"><b>제주양돈농협 첫 상용 공급 <i>첫 상용화</i></b><p>PNC·PBO 개발 완료 · Series A · 농림축산식품부 장관상</p></div></div>
+      <div class="tl-item rv"><div class="yr en">2024</div><div class="bd"><b>라인업 확장 <i>스케일업</i></b><p>PSP·PWC·PBD 개발 완료 · 중앙산업·해드림·백제나루 공급 확대 · 중기부 장관상</p></div></div>
+      <div class="tl-item rv"><div class="yr en">2025</div><div class="bd"><b>소 도축 라인 진입 <i>확장</i></b><p>CSP·CWC 개발 완료 · Series B · AFPRO 대상 · 산자부 장관 표창</p></div></div>
+      <div class="tl-item rv"><div class="yr en">2026</div><div class="bd"><b>기술특례 상장 준비 본격화 <i>IPO 준비</i></b><p>나주·평창 공급 · 대우산업개발 MOU(1월) · 임직원 80여 명</p></div></div>
+    </div>
+
+    <!-- 개요 / 뉴스·채용 -->
+    <div class="co-grid">
+      <div class="co-box frame rv">
+        <h4><span class="en">Overview</span>회사 개요</h4>
+        <div class="kv"><span class="k">설립</span><span class="v en">2022년 4월</span></div>
+        <div class="kv"><span class="k">임직원</span><span class="v">80여 명</span></div>
+        <div class="kv"><span class="k">거점</span><span class="v">판교(R&amp;D) · 오산(생산) · 대구(엔지니어링)</span></div>
+        <div class="kv"><span class="k">핵심 인력</span><span class="v">삼성·LG·한화 출신 로봇/AI 전문가</span></div>
+        <div class="kv"><span class="k">슬로건</span><span class="v en">Define the NeXt Standard</span></div>
+        <h4 style="margin-top:36px"><span class="en">Careers</span>산업의 다음 기준을 함께 만들 사람</h4>
+        <p style="font-size:13.5px;color:var(--gray);font-weight:300">유연한 근무 환경 — 함께 성장하는 여정.</p>
+        <div class="jobs">
+          <a class="job" href="mailto:info@robos.one?subject=[채용] 기구설계 (책임급)"><div><b>기구설계 엔지니어</b> <span> · 책임급</span></div><span class="go en">→</span></a>
+          <a class="job" href="mailto:info@robos.one?subject=[채용] 모션제어 (책임급)"><div><b>모션제어 엔지니어</b> <span> · 책임급</span></div><span class="go en">→</span></a>
+        </div>
+      </div>
+      <div class="co-box frame rv">
+        <h4><span class="en">Newsroom</span>뉴스</h4>
+        <a class="news-item" href="#" onclick="return false"><div class="mt"><b>농수축산신문</b><span class="en">2025.04</span><span>보도</span></div><div class="tt">[주목 이 업체] (주)로보스 — 도축장 환경 맞춤 솔루션</div></a>
+        <a class="news-item" href="#" onclick="return false"><div class="mt"><b>농수축산신문 · 농민신문</b><span class="en">2025.03</span><span>MOU</span></div><div class="tt">로보스-한국육류유통수출협회 MOU 체결</div></a>
+        <a class="news-item" href="#" onclick="return false"><div class="mt"><b>매일경제</b><span class="en">2024.12</span><span>보도</span></div><div class="tt">'21세기 백정' 도축로봇 만들어 신시장 개척</div></a>
+        <a class="news-item" href="#" onclick="return false"><div class="mt"><b>서울경제</b><span class="en">2024.11</span><span>보도</span></div><div class="tt">기피 업무 빈자리 채운 로봇 — 도축 자동화</div></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA BAND ================= -->
+<section class="cta-band">
+  <div class="beam"></div>
+  <div class="wrap">
+    <h2 class="rv">In the Dark,<br>We Are <span class="bx">the Light</span></h2>
+    <p class="rv">어둠 속에서 새로운 빛 — ROBOS와 함께 만들어 가십시오.</p>
+    <div class="hero-ctas rv">
+      <a class="btn btn-p" href="mailto:info@robos.one?subject=[도입/제휴 문의]">도입 · 제휴 문의 <span class="ar">→</span></a>
+      <a class="btn btn-g" href="mailto:ir@robos.one?subject=[IR 문의]">IR 문의 <span class="ar">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="f-top">
+      <div class="f-brand">
+        <svg viewBox="0 0 344 64" fill="#F1F4FA" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M0 64 V0 H56 V64 H42 V14 H14 V64 Z"/>
+          <path fill-rule="evenodd" d="M72 0 H128 V64 H72 Z M86 14 H114 V50 H86 Z"/>
+          <path fill-rule="evenodd" d="M144 0 H200 V64 H144 Z M158 14 H186 V50 H158 Z M200 0 L200 18 L178 0 Z"/>
+          <path fill-rule="evenodd" d="M216 0 H272 V64 H216 Z M230 14 H258 V50 H230 Z"/>
+          <path d="M344 0 V14 H302 V25 H344 V64 H288 V50 H330 V39 H288 V0 Z"/>
+        </svg>
+        <p>Define the NeXt Standard</p>
+      </div>
+      <div class="f-col">
+        <h6>Centers</h6>
+        <ul>
+          <li><b>판교 R&amp;D 센터</b>경기 성남시 분당구</li>
+          <li><b>오산 생산 센터</b>경기 오산시</li>
+          <li><b>대구 엔지니어링 센터</b>대구광역시</li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h6>Contact</h6>
+        <ul>
+          <li><a href="mailto:info@robos.one">info@robos.one</a></li>
+          <li><a href="mailto:ir@robos.one">ir@robos.one (IR)</a></li>
+          <li>대표전화 준비 중</li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h6>Sitemap</h6>
+        <ul>
+          <li><a href="#robos">ROBOS</a></li>
+          <li><a href="#tech">기술</a></li>
+          <li><a href="#business">사업</a></li>
+          <li><a href="#performance">성과</a></li>
+          <li><a href="#investors">투자정보</a></li>
+          <li><a href="#company">회사</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="f-bot">
+      <p class="en">© 2026 ROBOS Inc. All rights reserved. — Robotics and AI System Platform Leader</p>
+      <div class="f-sns">
+        <a href="https://www.linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zm7.5 0h3.8v2.2h.05c.53-1 1.83-2.2 3.77-2.2 4.03 0 4.78 2.65 4.78 6.1V24h-4v-8.5c0-2.03-.04-4.64-2.83-4.64-2.83 0-3.27 2.2-3.27 4.5V24H8V8z"/></svg></a>
+        <a href="https://www.youtube.com" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============ GNB scroll state ============ */
+const gnb=document.getElementById('gnb');
+addEventListener('scroll',()=>{gnb.classList.toggle('solid',scrollY>60)},{passive:true});
+const mnav=document.getElementById('mnav');
+document.getElementById('menuToggle').addEventListener('click',()=>mnav.classList.toggle('open'));
+mnav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mnav.classList.remove('open')));
+
+/* ============ Reveal (fade-up 24px, stagger 60ms) ============ */
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target;
+    const sibs=[...el.parentElement.children].filter(c=>c.classList&&c.classList.contains('rv'));
+    const idx=Math.max(0,sibs.indexOf(el));
+    setTimeout(()=>el.classList.add('in'),idx*60);
+    io.unobserve(el);
+  });
+},{threshold:.15,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.rv,.metric,tr.rv').forEach(el=>io.observe(el));
+
+/* ============ Counters (0 → target roll-up 1.2s) ============ */
+const cio=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target;cio.unobserve(el);
+    const to=parseFloat(el.dataset.to),dec=parseInt(el.dataset.dec||0),t0=performance.now();
+    (function tick(t){
+      const p=Math.min((t-t0)/1200,1),ease=1-Math.pow(1-p,3);
+      el.textContent=(to*ease).toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+      if(p<1)requestAnimationFrame(tick);
+    })(t0);
+  });
+},{threshold:.5});
+document.querySelectorAll('.cnt').forEach(el=>cio.observe(el));
+
+/* ============ Hero LiDAR scan canvas ============ */
+(function(){
+  const cv=document.getElementById('lidar'),ctx=cv.getContext('2d');
+  let W,H,pts=[],DPR=Math.min(devicePixelRatio||1,2);
+  function build(){
+    W=cv.clientWidth;H=cv.clientHeight;
+    cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+    pts=[];
+    const gap=Math.max(34,W/40);
+    for(let x=gap/2;x<W;x+=gap)for(let y=gap/2;y<H;y+=gap)
+      pts.push({x:x+(Math.random()-.5)*gap*.5,y:y+(Math.random()-.5)*gap*.5,r:Math.random()});
+  }
+  build();addEventListener('resize',build);
+  let t=0;
+  (function draw(){
+    ctx.clearRect(0,0,W,H);
+    t+=0.0022;
+    const scanX=((t%1)*1.25-0.125)*W; // sweep with off-screen margin
+    /* points */
+    for(const p of pts){
+      const d=Math.abs(p.x-scanX),near=Math.max(0,1-d/170);
+      const base=0.05+p.r*0.05;
+      const a=base+near*0.65;
+      if(near>0.02){
+        ctx.fillStyle=`rgba(31,81,255,${a})`;
+        ctx.fillRect(p.x-1.4,p.y-1.4,2.8,2.8);
+      }else{
+        ctx.fillStyle=`rgba(165,180,198,${base})`;
+        ctx.fillRect(p.x-1,p.y-1,2,2);
+      }
+      /* contour wave silhouette hint */
+      const wave=Math.sin(p.x*0.008+t*6)*40+H*0.62;
+      if(Math.abs(p.y-wave)<26&&Math.abs(p.x-scanX)<220){
+        ctx.fillStyle=`rgba(241,244,250,${0.22*Math.max(0,1-d/220)})`;
+        ctx.fillRect(p.x-1.6,p.y-1.6,3.2,3.2);
+      }
+    }
+    /* scan line */
+    const g=ctx.createLinearGradient(scanX-90,0,scanX+2,0);
+    g.addColorStop(0,'rgba(31,81,255,0)');g.addColorStop(1,'rgba(31,81,255,.30)');
+    ctx.fillStyle=g;ctx.fillRect(scanX-90,0,92,H);
+    ctx.fillStyle='rgba(120,150,255,.8)';ctx.fillRect(scanX,0,1.4,H);
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ============ 제조업 진화 4단계: 순차 점등 ============ */
+(function(){
+  const evo=document.getElementById('evo'),steps=[...evo.querySelectorAll('.evo-step')];
+  const o=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting)return;o.unobserve(evo);
+      steps.forEach((s,i)=>setTimeout(()=>s.classList.add('lit'),500+i*450));
+    });
+  },{threshold:.4});
+  o.observe(evo);
+})();
+
+/* ============ 프로세스 단계 점등 ============ */
+(function(){
+  const proc=document.getElementById('proc'),steps=[...proc.querySelectorAll('.proc-step')];
+  const o=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting)return;o.unobserve(proc);
+      steps.forEach((s,i)=>setTimeout(()=>s.classList.add('lit'),400+i*350));
+    });
+  },{threshold:.35});
+  o.observe(proc);
+})();
+
+/* ============ 데이터 플라이휠 노드 배치 + 순차 하이라이트 ============ */
+(function(){
+  const rot=document.getElementById('flyRot');
+  const labels=['현장 운영','데이터 수집','정제 · 라벨링','재학습','모델 배포','성능 개선'];
+  const R=labels.length,nodes=[];
+  labels.forEach((tx,i)=>{
+    const ang=(i/R)*Math.PI*2-Math.PI/2;
+    const n=document.createElement('div');
+    n.className='fly-node';
+    n.innerHTML=`<i></i><span>${tx}</span>`;
+    const r=46.5; // % radius
+    n.style.transformOrigin='center';
+    n.style.top=`calc(50% + ${Math.sin(ang)*r}%)`;
+    n.style.left=`calc(50% + ${Math.cos(ang)*r}%)`;
+    n.style.margin='-30px 0 0 -52px';
+    rot.appendChild(n);nodes.push(n);
+  });
+  let cur=0;
+  setInterval(()=>{
+    nodes.forEach(n=>n.classList.remove('hot'));
+    nodes[cur%R].classList.add('hot');cur++;
+  },1100);
+})();
+
+/* ============ 제품 데이터 & 필터 ============ */
+const PRODUCTS=[
+ /* 돼지 6 */
+ {c:'PNC',n:'목절개 로봇 (Pig Neck Cutter)',g:'pig',s:'sale',y:'2023 첫 공급',p:100},
+ {c:'PBO',n:'복부절개 로봇 (Pig Belly Opener)',g:'pig',s:'sale',y:'2023',p:100},
+ {c:'PBD',n:'항문적출 로봇 (Pig Bung Dropper)',g:'pig',s:'sale',y:'2024',p:100},
+ {c:'PSP',n:'이분도체 로봇 (Pig Splitter)',g:'pig',s:'sale',y:'2024',p:100},
+ {c:'PWC',n:'세정 로봇 (Pig Water Cleanser)',g:'pig',s:'sale',y:'2024',p:100},
+ {c:'PCS',n:'하차카운팅 비전 솔루션',g:'pig',s:'done',y:'2025',p:90},
+ /* 소 2 */
+ {c:'CSP',n:'소 이분도체 로봇 (Cattle Splitter)',g:'cattle',s:'sale',y:'2025 · 500kg 국내 유일',p:100},
+ {c:'CWC',n:'소 세정 로봇 (Cattle Water Cleanser)',g:'cattle',s:'sale',y:'2025',p:100},
+ /* 육가공 1 */
+ {c:'APK',n:'포장자동화 로봇 (Auto Packaging)',g:'meat',s:'done',y:'2025 · 5명→1명 검증',p:90},
+];
+const ST={sale:['상용화','sale'],done:['개발완료','done'],dev:['개발중','dev'],plan:['개발예정','plan']};
+const pgrid=document.getElementById('pgrid');
+function renderProducts(f){
+  pgrid.innerHTML='';
+  PRODUCTS.filter(p=>f==='all'||p.g===f).forEach((p,i)=>{
+    const cls=p.s==='dev'?'dev':(p.s==='plan'?'plan':'');
+    const el=document.createElement('div');
+    el.className=`pcard frame rv ${cls}`;
+    el.innerHTML=`<div class="top"><span class="code en">${p.c}</span><span class="st ${ST[p.s][1]}">${ST[p.s][0]}</span></div>
+      <div class="nm">${p.n}</div><div class="yy en">${p.y}</div>
+      <div class="pbar"><i data-w="${p.p}"></i></div>`;
+    pgrid.appendChild(el);
+    setTimeout(()=>{el.classList.add('in');el.querySelector('.pbar i').style.width=p.p+'%'},80+i*45);
+  });
+}
+renderProducts('all');
+document.getElementById('filters').addEventListener('click',e=>{
+  const b=e.target.closest('.fbtn');if(!b)return;
+  document.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');renderProducts(b.dataset.f);
+});
+
+/* ============ 성과 커버리지 네트워크 (지도형 좌표) ============ */
+(function(){
+  const svg=document.getElementById('netSvg');
+  /* 대략적 국내 지리 배치 (viewBox 500x435) */
+  const hub={x:255,y:180,name:'ROBOS'};
+  const nodes=[
+    {x:300,y:60, n:'평창영농조합법인',r:'강원 평창'},
+    {x:205,y:105,n:'(주)평농',r:'경기 평택'},
+    {x:150,y:160,n:'중앙산업',r:'충남 예산'},
+    {x:170,y:215,n:'백제나루영농조합법인',r:'충남 공주'},
+    {x:120,y:290,n:'나주축산물공판장',r:'전남 나주'},
+    {x:330,y:265,n:'농업회사법인(주)창녕축산물공판장',r:'경남 창녕'},
+    {x:365,y:225,n:'(주)해드림엘피씨',r:'경남 창녕'},
+    {x:305,y:305,n:'부경제일축산물유통센터(주)',r:'경남 고성'},
+    {x:175,y:395,n:'제주양돈농협',r:'제주 서귀포 · 2023 최초 도입'},
+  ];
+  let s='';
+  nodes.forEach(nd=>{s+=`<line class="net-line" x1="${hub.x}" y1="${hub.y}" x2="${nd.x}" y2="${nd.y}"/>`});
+  s+=`<circle class="net-hub-ring" cx="${hub.x}" cy="${hub.y}" r="16" style="transform-origin:${hub.x}px ${hub.y}px"/>`;
+  s+=`<circle class="net-hub" cx="${hub.x}" cy="${hub.y}" r="8"/>`;
+  s+=`<text class="net-label" x="${hub.x+16}" y="${hub.y+4}" style="fill:#F1F4FA;font-weight:700;font-size:12px">ROBOS</text>`;
+  nodes.forEach((nd,i)=>{
+    s+=`<circle class="net-dot ${i%2?'pulse':''}" cx="${nd.x}" cy="${nd.y}" r="4.5"/>`;
+    const anchor=nd.x>hub.x?'start':'end';
+    const dx=nd.x>hub.x?12:-12;
+    s+=`<text class="net-label" x="${nd.x+dx}" y="${nd.y+1}" text-anchor="${anchor}">${nd.n}</text>`;
+    s+=`<text class="net-label rg" x="${nd.x+dx}" y="${nd.y+14}" text-anchor="${anchor}">${nd.r}</text>`;
+  });
+  svg.innerHTML=s;
+})();
+
+/* ============ 매출 차트 ============ */
+(function(){
+  const chart=document.getElementById('chart');
+  const o=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting)return;o.unobserve(chart);
+      chart.querySelectorAll('.bar').forEach((b,i)=>{
+        setTimeout(()=>{
+          b.classList.add('in');
+          b.querySelector('.col').style.height=b.dataset.h+'%';
+        },i*140);
+      });
+    });
+  },{threshold:.4});
+  o.observe(chart);
+})();
+
+/* ============ IPO 로드맵 점등 ============ */
+(function(){
+  const rm=document.getElementById('roadmap');
+  const o=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(!e.isIntersecting)return;o.unobserve(rm);
+      rm.classList.add('in');
+      rm.querySelectorAll('.rm-step').forEach((s,i)=>setTimeout(()=>s.classList.add('lit'),400+i*380));
+    });
+  },{threshold:.35});
+  o.observe(rm);
+})();
+</script>
+</body>
+</html>
