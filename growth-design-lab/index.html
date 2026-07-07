@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Growth Design Lab™ — 성장이 작동하는 구조를 설계합니다</title>
+<meta name="description" content="성장 병목을 진단하고 지속 가능한 성장 구조를 설계하는 Growth Design Partner.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --navy:#0D1B2A;
+  --navy-2:#13253A;
+  --navy-3:#1B324D;
+  --green:#10A36A;
+  --green-2:#0FBF7C;
+  --green-soft:rgba(16,163,106,.12);
+  --white:#FFFFFF;
+  --off:#F6F8FA;
+  --ink:#1C2B3A;
+  --gray:#6B7A8C;
+  --line:#E3E9EF;
+  --line-navy:rgba(255,255,255,.12);
+  --radius:14px;
+  --max:1160px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'SUIT Variable','SUIT',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  color:var(--ink);background:var(--white);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+a{text-decoration:none;color:inherit}
+ul{list-style:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+section{padding:110px 0}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--green);margin-bottom:18px;
+}
+.eyebrow::before{content:"";width:26px;height:2px;background:var(--green)}
+h2.sec-title{font-size:clamp(28px,4vw,42px);font-weight:800;line-height:1.28;letter-spacing:-.02em;color:var(--navy);word-break:keep-all}
+.sec-desc{margin-top:16px;font-size:17px;color:var(--gray);max-width:640px;word-break:keep-all}
+.tm{font-size:.55em;vertical-align:super;font-weight:600}
+
+/* ============ SCROLL PROGRESS ============ */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--green),var(--green-2));z-index:200;transition:width .1s linear}
+
+/* ============ REVEAL MOTION ============ */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.on{opacity:1;transform:none}
+.rv-l{opacity:0;transform:translateX(-36px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv-r{opacity:0;transform:translateX(36px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv-l.on,.rv-r.on{opacity:1;transform:none}
+/* 라인 드로잉 */
+.draw path,.draw circle,.draw line,.draw polyline{stroke-dasharray:600;stroke-dashoffset:600}
+.draw.on path,.draw.on circle,.draw.on line,.draw.on polyline{animation:draw 1.6s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+/* 바 성장 */
+.grow rect.bar{transform:scaleY(0);transform-origin:bottom;transition:transform 1s var(--ease)}
+.grow.on rect.bar{transform:scaleY(1)}
+.grow.on rect.bar:nth-of-type(2){transition-delay:.15s}
+.grow.on rect.bar:nth-of-type(3){transition-delay:.3s}
+.grow.on rect.bar:nth-of-type(4){transition-delay:.45s}
+.grow.on rect.bar:nth-of-type(5){transition-delay:.6s}
+
+/* ============ NAV ============ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(13,27,42,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line-navy);
+}
+.nav-in{max-width:var(--max);margin:0 auto;padding:0 24px;height:70px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px}
+.brand svg{display:block}
+/* 로고타이프: 전체 SVG 패스 (GROWTH 크게 / DESIGN LAB 작게, 가운데 정렬) */
+.brand-lt{display:flex;flex-direction:column;align-items:center;gap:4px;color:#fff}
+.brand-lt .lt1{height:15px;width:auto;display:block}
+.brand-lt .lt2{height:8px;width:auto;display:block}
+.menu{display:flex;gap:34px;align-items:center}
+.menu a{color:rgba(255,255,255,.75);font-size:14.5px;font-weight:600;transition:color .25s;position:relative}
+.menu a:hover{color:#fff}
+.menu a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;background:var(--green);transition:width .25s}
+.menu a:hover::after{width:100%}
+.cta-btn{
+  background:var(--green);color:#fff!important;padding:10px 22px;border-radius:999px;
+  font-weight:700;font-size:14px;transition:transform .25s,box-shadow .25s;
+}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,163,106,.4)}
+.cta-btn::after{display:none}
+.ham{display:none;background:none;border:0;cursor:pointer;flex-direction:column;gap:5px;padding:6px}
+.ham span{width:24px;height:2px;background:#fff;display:block}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  background:var(--navy);color:#fff;position:relative;overflow:hidden;
+  padding:150px 0 110px;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(900px 500px at 82% 18%, rgba(16,163,106,.16), transparent 60%),
+    radial-gradient(700px 500px at 8% 90%, rgba(27,50,77,.9), transparent 65%);
+}
+.grid-bg{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse at 60% 40%,#000 30%,transparent 75%);
+}
+/* 떠다니는 파티클 */
+.pt{position:absolute;border-radius:50%;background:var(--green);opacity:.35;animation:drift linear infinite}
+@keyframes drift{
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:.35}
+  90%{opacity:.35}
+  100%{transform:translateY(-90vh) translateX(30px);opacity:0}
+}
+.hero .wrap{position:relative;width:100%}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line-navy);
+  border-radius:999px;padding:8px 18px;font-size:13px;font-weight:600;color:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.04);margin-bottom:28px;
+}
+.hero-tag i{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,163,106,.5)}50%{box-shadow:0 0 0 7px rgba(16,163,106,0)}}
+.hero h1{font-size:clamp(32px,4.6vw,56px);font-weight:800;line-height:1.24;letter-spacing:-.02em;word-break:keep-all}
+/* 헤드라인 라인별 마스크 리프트 */
+.hero h1 .ln{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+.hero h1 .li{display:inline-block;transform:translateY(115%);animation:lift .85s var(--ease) forwards}
+.hero h1 .ln:nth-child(1) .li{animation-delay:.15s}
+.hero h1 .ln:nth-child(2) .li{animation-delay:.28s}
+.hero h1 .ln:nth-child(3) .li{animation-delay:.41s}
+.hero h1 .ln:nth-child(4) .li{animation-delay:.54s}
+@keyframes lift{to{transform:translateY(0)}}
+.hero h1 em{font-style:normal;color:var(--green);position:relative;white-space:nowrap}
+.hero h1 em::after{
+  content:"";position:absolute;left:0;bottom:4px;width:100%;height:10px;background:var(--green-soft);z-index:-1;
+  transform:scaleX(0);transform-origin:left;animation:sweep .7s 1.15s var(--ease) forwards;
+}
+@keyframes sweep{to{transform:scaleX(1)}}
+.hero p.sub{margin-top:26px;font-size:18px;line-height:1.75;color:rgba(255,255,255,.72);max-width:540px;word-break:keep-all}
+.hero-actions{margin-top:42px;display:flex;gap:14px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;padding:15px 32px;border-radius:999px;
+  font-weight:700;font-size:15.5px;transition:transform .25s,box-shadow .25s,background .25s;
+}
+.btn-g{background:var(--green);color:#fff}
+.btn-g:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(16,163,106,.45)}
+.btn-o{border:1.5px solid rgba(255,255,255,.35);color:#fff}
+.btn-o:hover{background:rgba(255,255,255,.08);transform:translateY(-3px)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+/* --- 히어로 지표: 어떤 비율에서도 안 깨지게 --- */
+.hero-stats{
+  position:relative;margin-top:72px;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line-navy);
+  border:1px solid var(--line-navy);border-radius:var(--radius);overflow:hidden;
+}
+.hstat{background:rgba(20,35,52,.72);padding:clamp(18px,2.4vw,28px) clamp(16px,2.2vw,30px);backdrop-filter:blur(4px);min-width:0;display:flex;gap:14px;align-items:flex-start}
+.hstat .hic{flex:none;width:clamp(34px,3.4vw,44px);height:clamp(34px,3.4vw,44px);border-radius:11px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;margin-top:4px}
+.hstat .hic svg{width:55%;height:55%;stroke:var(--green-2)}
+.hstat .tx{min-width:0}
+.hstat b{
+  display:flex;flex-wrap:wrap;align-items:baseline;column-gap:3px;
+  font-size:clamp(21px,2.6vw,36px);font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.15;
+}
+.hstat b i{font-style:normal;color:var(--green-2);font-size:clamp(14px,1.5vw,21px);font-weight:800;white-space:nowrap}
+.hstat span{display:block;margin-top:7px;font-size:clamp(11.5px,1.15vw,13.5px);color:rgba(255,255,255,.62);font-weight:500;line-height:1.5;word-break:keep-all}
+.scroll-hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.28em;text-transform:uppercase;animation:hint 2s infinite}
+@keyframes hint{0%,100%{opacity:.4;transform:translate(-50%,0)}50%{opacity:1;transform:translate(-50%,6px)}}
+
+/* ============ SIGNATURE BAND ============ */
+.sig{background:var(--white);text-align:center;padding:100px 0;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.sig .q{width:54px;height:54px;margin:0 auto 26px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center}
+.sig .q svg{width:24px;height:24px;fill:var(--green)}
+.sig blockquote{font-size:clamp(23px,3.2vw,36px);font-weight:800;line-height:1.5;letter-spacing:-.02em;color:var(--navy);max-width:880px;margin:0 auto;word-break:keep-all}
+.sig blockquote strong{color:var(--green)}
+.sig .who{margin-top:22px;font-size:14px;font-weight:700;letter-spacing:.18em;color:var(--gray);text-transform:uppercase}
+.sig .deco{position:absolute;opacity:.5;pointer-events:none}
+.sig .deco.d1{left:-40px;top:30px;width:220px}
+.sig .deco.d2{right:-50px;bottom:20px;width:260px;transform:rotate(8deg)}
+
+/* ============ IDENTITY ============ */
+.identity{background:var(--off);position:relative;overflow:hidden}
+.id-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:56px}
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:38px 32px;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s;
+  position:relative;overflow:hidden;
+}
+.card::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.card:hover{transform:translateY(-8px);box-shadow:0 22px 44px rgba(13,27,42,.10);border-color:transparent}
+.card:hover::before{transform:scaleX(1)}
+.card .ic{
+  width:58px;height:58px;border-radius:14px;background:var(--green-soft);
+  display:flex;align-items:center;justify-content:center;margin-bottom:22px;
+  transition:transform .4s var(--ease),background .4s;
+}
+.card:hover .ic{transform:rotate(-6deg) scale(1.08);background:var(--green)}
+.card .ic svg{width:28px;height:28px;stroke:var(--green);transition:stroke .3s}
+.card:hover .ic svg{stroke:#fff}
+.card h3{font-size:19px;font-weight:800;color:var(--navy);margin-bottom:10px;letter-spacing:-.01em}
+.card h3 small{display:block;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--green);margin-bottom:6px;text-transform:uppercase}
+.card p{font-size:15px;color:var(--gray);line-height:1.7;word-break:keep-all}
+
+/* ============ MISSION / VISION ============ */
+.mv{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+.mv::before{content:"";position:absolute;inset:0;background:radial-gradient(800px 400px at 15% 20%,rgba(16,163,106,.12),transparent 60%)}
+.mv .wrap{position:relative}
+.mv-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:56px}
+.mv-card{border:1px solid var(--line-navy);border-radius:var(--radius);padding:46px 42px;background:rgba(255,255,255,.03);transition:background .3s,transform .35s var(--ease);position:relative;overflow:hidden}
+.mv-card:hover{background:rgba(255,255,255,.06);transform:translateY(-6px)}
+.mv-card .mic{width:56px;height:56px;border-radius:50%;border:1.5px solid rgba(16,163,106,.5);display:flex;align-items:center;justify-content:center;margin-bottom:26px;background:rgba(16,163,106,.08)}
+.mv-card .mic svg{width:26px;height:26px;stroke:var(--green-2)}
+.mv-card .lab{font-size:13px;font-weight:800;letter-spacing:.22em;color:var(--green);text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.mv-card .lab::after{content:"";flex:1;height:1px;background:var(--line-navy)}
+.mv-card p{margin-top:22px;font-size:clamp(18px,2vw,22px);font-weight:600;line-height:1.65;color:rgba(255,255,255,.92);word-break:keep-all}
+.mv-card p strong{color:var(--green-2)}
+.mv-card .bgnum{position:absolute;right:18px;bottom:-24px;font-size:130px;font-weight:800;color:rgba(255,255,255,.04);line-height:1;pointer-events:none}
+
+/* ============ PHILOSOPHY ============ */
+.phil{position:relative;overflow:hidden}
+.phil-flow{margin-top:64px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;position:relative}
+.ph-item{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:32px 26px;position:relative;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease);
+}
+.ph-item:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(13,27,42,.10)}
+.ph-item::after{
+  content:"";position:absolute;top:50%;right:-17px;width:12px;height:12px;z-index:2;
+  border-top:2.5px solid var(--green);border-right:2.5px solid var(--green);
+  transform:translateY(-50%) rotate(45deg);
+}
+.ph-item:last-child::after{display:none}
+.ph-item .pic{width:54px;height:54px;border-radius:13px;background:var(--navy);display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:background .35s,transform .35s var(--ease)}
+.ph-item:hover .pic{background:var(--green);transform:scale(1.08) rotate(-5deg)}
+.ph-item .pic svg{width:26px;height:26px;stroke:#fff}
+.ph-item .k{font-size:12.5px;font-weight:800;letter-spacing:.2em;color:var(--green);text-transform:uppercase;margin-bottom:10px}
+.ph-item p{font-size:14.5px;color:var(--ink);line-height:1.72;word-break:keep-all}
+
+/* ============ THINKING (principles) ============ */
+.think{background:var(--off)}
+.think .wrap{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.pr-list{display:flex;flex-direction:column;gap:14px}
+.pr{
+  display:flex;align-items:center;gap:22px;
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px 28px;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s;
+}
+.pr:hover{transform:translateX(10px);box-shadow:0 14px 30px rgba(13,27,42,.08);border-color:rgba(16,163,106,.4)}
+.pr .pic{flex:none;width:46px;height:46px;border-radius:12px;background:var(--green-soft);display:flex;align-items:center;justify-content:center}
+.pr .pic svg{width:23px;height:23px;stroke:var(--green)}
+.pr .tx b{display:block;font-size:11.5px;font-weight:800;letter-spacing:.16em;color:var(--green);text-transform:uppercase;margin-bottom:4px}
+.pr .tx p{font-size:16px;font-weight:600;color:var(--navy);word-break:keep-all;line-height:1.5}
+.think-visual{position:relative;display:flex;justify-content:center}
+.think-visual svg{width:min(420px,100%)}
+
+/* ============ METHODOLOGY ============ */
+.method{background:var(--white)}
+.flow{max-width:680px;margin:64px auto 0;display:flex;flex-direction:column;align-items:stretch}
+.fl{
+  border-radius:12px;padding:20px 30px;display:flex;align-items:center;gap:16px;
+  font-size:16.5px;font-weight:700;letter-spacing:-.01em;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.fl:hover{transform:scale(1.025);box-shadow:0 14px 32px rgba(13,27,42,.16)}
+.fl.solid{background:var(--navy);color:#fff}
+.fl.line{background:#fff;border:1.5px solid var(--green);color:var(--navy)}
+.fl .fic{width:38px;height:38px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.fl.solid .fic{background:rgba(255,255,255,.1)}
+.fl.line .fic{background:var(--green-soft)}
+.fl .fic svg{width:19px;height:19px}
+.fl.solid .fic svg{stroke:#fff}
+.fl.line .fic svg{stroke:var(--green)}
+.fl-arrow{align-self:center;padding:7px 0;display:flex}
+.fl-arrow svg{width:18px;height:18px;stroke:var(--green)}
+.fl-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1.5px solid var(--green);border-radius:12px;overflow:hidden;background:#fff}
+.fl-tools div{padding:22px 12px;text-align:center;font-size:14px;font-weight:700;color:var(--navy);transition:background .3s}
+.fl-tools div:hover{background:var(--green-soft)}
+.fl-tools div + div{border-left:1px solid var(--line)}
+.fl-tools .tic{width:40px;height:40px;margin:0 auto 10px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;padding:0;border:0}
+.fl-tools .tic svg{width:20px;height:20px;stroke:var(--green)}
+.fl-tools div span{display:block;font-size:11.5px;font-weight:600;color:var(--green);letter-spacing:.06em;margin-top:4px}
+
+/* ============ USP ============ */
+.usp{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+.usp::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 420px at 85% 80%,rgba(16,163,106,.14),transparent 60%)}
+.usp .wrap{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.usp .big{font-size:clamp(52px,7vw,90px);font-weight:800;line-height:1;color:var(--green-2);letter-spacing:-.03em;display:flex;align-items:baseline;flex-wrap:wrap;gap:8px}
+.usp .big small{font-size:.32em;color:rgba(255,255,255,.7);font-weight:700}
+.usp p.d{margin-top:24px;font-size:17px;line-height:1.8;color:rgba(255,255,255,.75);word-break:keep-all}
+.usp p.d strong{color:#fff}
+.usp-chart{margin-top:38px;max-width:420px}
+.usp-points{display:flex;flex-direction:column;gap:16px}
+.up{display:flex;gap:18px;align-items:flex-start;border:1px solid var(--line-navy);border-radius:var(--radius);padding:24px 26px;background:rgba(255,255,255,.03);transition:background .3s,border-color .3s,transform .3s var(--ease)}
+.up:hover{background:rgba(16,163,106,.08);border-color:rgba(16,163,106,.4);transform:translateX(8px)}
+.up .uic{flex:none;width:44px;height:44px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center}
+.up .uic svg{width:22px;height:22px;stroke:#fff}
+.up h4{font-size:16.5px;font-weight:700;margin-bottom:5px}
+.up p{font-size:14px;color:rgba(255,255,255,.65);line-height:1.65;word-break:keep-all}
+
+/* ============ CTA ============ */
+.cta{
+  background:linear-gradient(135deg,var(--green) 0%,#0C7E52 100%);
+  color:#fff;text-align:center;padding:110px 24px;position:relative;overflow:hidden;
+}
+.cta::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse at 50% 50%,#000 20%,transparent 75%);
+}
+.cta .cic{position:relative;width:64px;height:64px;margin:0 auto 28px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;animation:float 5s ease-in-out infinite}
+.cta .cic svg{width:30px;height:30px;stroke:#fff}
+.cta h2{position:relative;font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.35;word-break:keep-all}
+.cta p{position:relative;margin:20px auto 0;font-size:17px;max-width:560px;color:rgba(255,255,255,.85);word-break:keep-all}
+.cta .btn{position:relative;margin-top:40px;background:#fff;color:var(--navy)}
+.cta .btn:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(0,0,0,.25)}
+
+/* ============ FOOTER ============ */
+footer{background:var(--navy);color:rgba(255,255,255,.6);padding:64px 0 40px;border-top:1px solid var(--line-navy)}
+.ft{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
+.ft .brand-lt .lt1{height:13px}
+.ft .brand-lt .lt2{height:7px}
+.ft-note{margin-top:14px;font-size:13.5px;line-height:1.7;max-width:380px;word-break:keep-all}
+.ft-links{display:flex;gap:28px;font-size:14px;font-weight:600}
+.ft-links a:hover{color:#fff}
+.copy{margin-top:44px;padding-top:24px;border-top:1px solid var(--line-navy);font-size:12.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1020px){
+  .think .wrap{grid-template-columns:1fr;gap:48px}
+  .think-visual{order:-1}
+  .usp .wrap{grid-template-columns:1fr;gap:44px}
+  .phil-flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ph-item:nth-child(2)::after{display:none}
+  .id-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  .mv-grid{grid-template-columns:1fr}
+  .menu{
+    position:fixed;top:70px;right:0;flex-direction:column;background:var(--navy);
+    width:100%;padding:28px 24px;gap:22px;align-items:flex-start;
+    transform:translateY(-130%);transition:transform .35s var(--ease);border-bottom:1px solid var(--line-navy);
+  }
+  .menu.open{transform:none}
+  .ham{display:flex}
+}
+@media(max-width:680px){
+  section{padding:76px 0}
+  .hero-stats{grid-template-columns:1fr}
+  .hstat{align-items:center}
+  .hstat .hic{margin-top:0}
+  .hstat b{font-size:26px}
+  .hstat b i{font-size:16px}
+  .id-grid,.phil-flow{grid-template-columns:1fr}
+  .ph-item::after{display:none!important}
+  .pr{padding:20px 22px}
+  .sig .deco{display:none}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <div class="nav-in">
+    <a href="#top" class="brand">
+      <svg width="32" height="35" viewBox="0 0 200 220" fill="none" aria-hidden="true">
+        <path d="M36 64 L168 16 L168 150 L144 143 L144 44 L62 72 L62 178 L88 196 L36 186 Z" fill="#F1F4FA"/>
+        <rect x="96" y="118" width="18" height="84" fill="#10A36A"/>
+        <rect x="120" y="90" width="20" height="108" fill="#10A36A"/>
+      </svg>
+      <div class="brand-lt" role="img" aria-label="GROWTH DESIGN LAB">
+        <svg class="lt1" viewBox="0 0 492 78" fill="none" stroke="currentColor" stroke-width="12" aria-hidden="true">
+          <!-- G -->
+          <path d="M56 12 A30 30 0 1 0 56 60 L56 42 L36 42"/>
+          <!-- R -->
+          <path d="M84 8 V70 M84 8 H104 A16 16 0 0 1 104 40 H84 M102 40 L124 70"/>
+          <!-- O -->
+          <circle cx="172" cy="39" r="30"/>
+          <!-- W (VV 오버랩 — 첫 V 업스트로크 전체가 그린) -->
+          <path d="M228 8 L252 70"/>
+          <path d="M252 70 L274 8" stroke="#10A36A"/>
+          <path d="M272 8 L296 70 M296 70 L318 8"/>
+          <!-- T -->
+          <path d="M344 14 H404 M374 14 V70"/>
+          <!-- H -->
+          <path d="M428 8 V70 M480 8 V70 M428 40 H480"/>
+        </svg>
+        <svg class="lt2" viewBox="0 0 360 42" fill="none" stroke="#10A36A" stroke-width="6" aria-hidden="true">
+          <!-- D -->
+          <path d="M4 3 V39 M4 3 H12 A18 18 0 0 1 12 39 H4"/>
+          <!-- E -->
+          <path d="M46 3 V39 M46 3 H70 M46 21 H66 M46 39 H70"/>
+          <!-- S -->
+          <path d="M112 8 C98 2 88 7 90 14 C92 21 108 20 110 27 C112 34 102 41 88 35"/>
+          <!-- I -->
+          <path d="M134 3 V39"/>
+          <!-- G -->
+          <path d="M176 10 A14 14 0 1 0 176 34 L176 25 L164 25"/>
+          <!-- N -->
+          <path d="M198 39 V3 L222 39 V3"/>
+          <!-- L -->
+          <path d="M256 3 V39 H278"/>
+          <!-- A -->
+          <path d="M296 39 L308 3 L320 39 M301 27 H315"/>
+          <!-- B -->
+          <path d="M340 3 V39 M340 3 H349 A9 9 0 0 1 349 20 H340 M340 20 H351 A10 10 0 0 1 351 39 H340"/>
+        </svg>
+      </div>
+    </a>
+    <ul class="menu" id="menu">
+      <li><a href="#identity">Identity</a></li>
+      <li><a href="#mission">Mission</a></li>
+      <li><a href="#philosophy">Philosophy</a></li>
+      <li><a href="#thinking">Thinking</a></li>
+      <li><a href="#methodology">Methodology</a></li>
+      <li><a href="#contact" class="cta-btn">진단 문의</a></li>
+    </ul>
+    <button class="ham" id="ham" aria-label="menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <div>
+      <div class="hero-tag rv"><i></i>Growth Architect — 성장 구조 설계 파트너</div>
+      <h1>
+        <span class="ln"><span class="li">우리는 성장을</span></span>
+        <span class="ln"><span class="li">컨설팅하지 않습니다.</span></span>
+        <span class="ln"><span class="li"><em>성장이 작동하는 구조</em>를</span></span>
+        <span class="ln"><span class="li">설계합니다.</span></span>
+      </h1>
+      <p class="sub rv">Growth Design Lab™은 기업의 성장 병목을 진단하고,
+      지속 가능한 성장 구조를 설계하는 Growth Design Partner입니다.</p>
+      <div class="hero-actions rv">
+        <a class="btn btn-g" href="#contact">성장 병목 진단받기
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="btn btn-o" href="#methodology">방법론 살펴보기</a>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="hero-stats rv">
+      <div class="hstat">
+        <div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+        <div class="tx"><b><span class="cnt" data-to="23">0</span><i>년</i></b><span>대기업부터 스타트업까지 축적한 실전 경험</span></div>
+      </div>
+      <div class="hstat">
+        <div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 8.7l5.4-.8z"/></svg></div>
+        <div class="tx"><b><span class="cnt" data-to="5">0</span><i>대 원칙</i></b><span>Growth Thinking™ 성장 사고 체계</span></div>
+      </div>
+      <div class="hstat">
+        <div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></div>
+        <div class="tx"><b><span class="cnt" data-to="1">0</span><i>개의 목표</i></b><span>Sustainable Profit Engine™ 구축</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</header>
+
+<!-- ============ SIGNATURE ============ -->
+<section class="sig" aria-label="signature statement">
+  <!-- 장식 라인 아트 -->
+  <svg class="deco d1 draw" viewBox="0 0 220 220" fill="none" stroke="#E3E9EF" stroke-width="1.5">
+    <path d="M20 190 L70 150 L110 165 L160 100 L200 40"/>
+    <circle cx="200" cy="40" r="6" stroke="#10A36A"/>
+  </svg>
+  <svg class="deco d2 draw" viewBox="0 0 260 260" fill="none" stroke="#E3E9EF" stroke-width="1.5">
+    <rect x="30" y="120" width="30" height="100"/>
+    <rect x="80" y="90" width="30" height="130"/>
+    <rect x="130" y="50" width="30" height="170" stroke="#10A36A"/>
+  </svg>
+  <div class="wrap">
+    <div class="q rv"><svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg></div>
+    <blockquote class="rv">"성장이 멈추는 이유는<br>성장을 제한하는 <strong>병목</strong>이 존재하기 때문입니다."</blockquote>
+    <div class="who rv">Growth Design Lab™ — Growth Philosophy</div>
+  </div>
+</section>
+
+<!-- ============ IDENTITY ============ -->
+<section class="identity" id="identity">
+  <div class="wrap">
+    <div class="eyebrow rv">Brand Identity</div>
+    <h2 class="sec-title rv">이름에 담은 세 가지 약속</h2>
+    <p class="sec-desc rv">Growth Design Lab™이라는 이름은 우리가 하는 일, 고객이 얻는 가치, 그리고 우리가 일하는 방식을 그대로 담고 있습니다.</p>
+    <div class="id-grid">
+      <div class="card rv">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 20V12l4 2v6M13 20V8l6-3v15"/></svg></div>
+        <h3><small>Growth</small>고객이 원하는 가치</h3>
+        <p>매출의 성장이 아닌, 지속 가능한 이윤창출 능력의 성장. 우리는 고객 기업이 영속할 수 있는 성장을 지향합니다.</p>
+      </div>
+      <div class="card rv">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 4.5l4 4L8 20H4v-4zM13 7l4 4"/></svg></div>
+        <h3><small>Design</small>우리가 하는 일</h3>
+        <p>조언이 아닌 설계. 성장 병목을 진단하고, 성장이 실제로 작동하는 구조를 설계하는 것이 우리의 일입니다.</p>
+      </div>
+      <div class="card rv">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9.5V3M7.5 15h9"/></svg></div>
+        <h3><small>Lab</small>우리가 일하는 방식</h3>
+        <p>리서치와 검증, 그리고 방법론. 감이 아니라 체계화된 Growth Design Methodology™로 성장을 다룹니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MISSION / VISION ============ -->
+<section class="mv" id="mission">
+  <div class="wrap">
+    <div class="eyebrow rv">Mission &amp; Vision</div>
+    <h2 class="sec-title rv" style="color:#fff">우리가 존재하는 이유</h2>
+    <div class="mv-grid">
+      <div class="mv-card rv-l">
+        <div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg></div>
+        <div class="lab">Mission</div>
+        <p>우리는 기업의 <strong>성장 병목을 진단</strong>하고,
+        <strong>지속 가능한 성장 구조를 설계</strong>하여 기업의 영속을 돕습니다.</p>
+        <div class="bgnum">M</div>
+      </div>
+      <div class="mv-card rv-r">
+        <div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="lab">Vision</div>
+        <p>모든 기업이 <strong>지속 가능한 성장 시스템</strong>을 갖는
+        세상을 만듭니다.</p>
+        <div class="bgnum">V</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PHILOSOPHY ============ -->
+<section class="phil" id="philosophy">
+  <div class="wrap">
+    <div class="eyebrow rv">Growth Philosophy<span class="tm">™</span></div>
+    <h2 class="sec-title rv">성장을 바라보는 우리의 논리</h2>
+    <p class="sec-desc rv">WHY에서 MISSION까지 — 하나의 논리로 연결된 성장 철학입니다.</p>
+    <div class="phil-flow">
+      <div class="ph-item rv">
+        <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.3a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.1-2.5 3.6M12 17v.4"/></svg></div>
+        <div class="k">01 · Why</div>
+        <p>기업의 궁극적인 목적은 지속적인 이윤창출을 통해 영속하는 것입니다.</p>
+      </div>
+      <div class="ph-item rv">
+        <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-9.5-9A5.4 5.4 0 0 1 12 6.6 5.4 5.4 0 0 1 21.5 12c-2 4.4-9.5 9-9.5 9z"/></svg></div>
+        <div class="k">02 · Belief</div>
+        <p>지속적인 이윤은 지속 가능한 성장의 결과입니다.</p>
+      </div>
+      <div class="ph-item rv">
+        <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8M10 3v5l-6 10a2.4 2.4 0 0 0 2.2 3.5h11.6A2.4 2.4 0 0 0 20 18L14 8V3"/><circle cx="10" cy="16" r="1.2" fill="currentColor"/><circle cx="14" cy="18" r="1" fill="currentColor"/></svg></div>
+        <div class="k">03 · Theory</div>
+        <p>모든 기업은 성장 잠재력을 가지고 있습니다. 성장이 멈추는 이유는 병목이 존재하기 때문입니다.</p>
+      </div>
+      <div class="ph-item rv">
+        <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M4 20V6l5 4 5-7 6 5v12"/></svg></div>
+        <div class="k">04 · Mission</div>
+        <p>그래서 우리는 성장 병목을 진단하고, 지속 가능한 성장 구조를 설계합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THINKING ============ -->
+<section class="think" id="thinking">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow rv">Growth Thinking<span class="tm">™</span></div>
+      <h2 class="sec-title rv">5가지 성장 원칙</h2>
+      <p class="sec-desc rv">모든 진단과 설계는 이 다섯 가지 원칙 위에서 이루어집니다.</p>
+      <div class="pr-list" style="margin-top:44px">
+        <div class="pr rv">
+          <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div>
+          <div class="tx"><b>Principle 1</b><p>성장은 매출이 아니라 지속 가능한 이윤창출 능력이다.</p></div>
+        </div>
+        <div class="pr rv">
+          <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v5a4 4 0 0 0 8 0V3M12 12v9M8 21h8"/></svg></div>
+          <div class="tx"><b>Principle 2</b><p>성장의 첫 단계는 병목 제거다.</p></div>
+        </div>
+        <div class="pr rv">
+          <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-5 0-7-4-7-8 0-5 4-9 7-10 3 1 7 5 7 10 0 4-2 8-7 8zM12 21v-8"/><path d="M12 13l-3-3M12 10l3-3" stroke-linecap="round"/></svg></div>
+          <div class="tx"><b>Principle 3</b><p>모든 기업은 성장 잠재력을 가지고 있다.</p></div>
+        </div>
+        <div class="pr rv">
+          <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4M6.5 10v4M17.5 10v4M10 17.5h4"/></svg></div>
+          <div class="tx"><b>Principle 4</b><p>전략은 구조를 통해 성과로 연결된다.</p></div>
+        </div>
+        <div class="pr rv">
+          <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg></div>
+          <div class="tx"><b>Principle 5</b><p>지속 가능한 성장은 지속적인 이윤으로 이어진다.</p></div>
+        </div>
+      </div>
+    </div>
+    <!-- 원칙 일러스트: 성장 사이클 -->
+    <div class="think-visual rv-r">
+      <svg viewBox="0 0 420 420" fill="none" aria-hidden="true">
+        <circle cx="210" cy="210" r="150" stroke="#E3E9EF" stroke-width="1.5" stroke-dasharray="5 7"/>
+        <circle cx="210" cy="210" r="104" stroke="#E3E9EF" stroke-width="1.5"/>
+        <!-- 중앙 로고 심볼 (통일 로고) -->
+        <g transform="translate(159,157) scale(0.5)">
+          <path d="M36 64 L168 16 L168 150 L144 143 L144 44 L62 72 L62 178 L88 196 L36 186 Z" fill="#0D1B2A"/>
+          <rect x="96" y="118" width="18" height="84" fill="#10A36A"/>
+          <rect x="120" y="90" width="20" height="108" fill="#10A36A"/>
+        </g>
+        <!-- 궤도 노드 5개 -->
+        <g class="orbit">
+          <g transform="translate(210,60)"><circle r="26" fill="#fff" stroke="#10A36A" stroke-width="1.5"/><text y="5" text-anchor="middle" font-size="13" font-weight="800" fill="#10A36A" font-family="inherit">P1</text></g>
+          <g transform="translate(352,166)"><circle r="26" fill="#fff" stroke="#E3E9EF" stroke-width="1.5"/><text y="5" text-anchor="middle" font-size="13" font-weight="800" fill="#0D1B2A" font-family="inherit">P2</text></g>
+          <g transform="translate(298,332)"><circle r="26" fill="#fff" stroke="#10A36A" stroke-width="1.5"/><text y="5" text-anchor="middle" font-size="13" font-weight="800" fill="#10A36A" font-family="inherit">P3</text></g>
+          <g transform="translate(122,332)"><circle r="26" fill="#fff" stroke="#E3E9EF" stroke-width="1.5"/><text y="5" text-anchor="middle" font-size="13" font-weight="800" fill="#0D1B2A" font-family="inherit">P4</text></g>
+          <g transform="translate(68,166)"><circle r="26" fill="#fff" stroke="#10A36A" stroke-width="1.5"/><text y="5" text-anchor="middle" font-size="13" font-weight="800" fill="#10A36A" font-family="inherit">P5</text></g>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ METHODOLOGY ============ -->
+<section class="method" id="methodology">
+  <div class="wrap">
+    <div class="eyebrow rv">Growth Design Methodology<span class="tm">™</span></div>
+    <h2 class="sec-title rv">진단에서 이윤 엔진까지,<br>하나로 연결된 설계 프로세스</h2>
+    <p class="sec-desc rv">브랜드 철학에서 출발해 진단 도구를 거쳐, 지속 가능한 이윤 엔진 구축으로 완성되는 Growth Design Lab™의 방법론 구조입니다.</p>
+    <div class="flow">
+      <div class="fl solid rv"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 16v-4M12 16V8M16 16v-6" stroke-linecap="round"/></svg></span>Growth Design Lab™</div>
+      <div class="fl-arrow rv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+      <div class="fl line rv"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4l7 3-7 3M6 21h12"/></svg></span>Mission — 성장 병목 진단과 구조 설계</div>
+      <div class="fl-arrow rv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+      <div class="fl solid rv"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M12 12v9M8 18h8"/></svg></span>Growth Philosophy™ — 성장 철학</div>
+      <div class="fl-arrow rv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+      <div class="fl line rv"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l9 5-9 5-9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/></svg></span>Growth Design™ — 성장 구조 설계</div>
+      <div class="fl-arrow rv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+      <div class="fl solid rv"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></svg></span>Growth Audit™ — 성장 병목 진단</div>
+      <div class="fl-arrow rv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+      <div class="fl-tools rv">
+        <div><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4a2 2 0 1 1 4 0v2h4a1 1 0 0 1 1 1v4h-2a2 2 0 1 0 0 4h2v4a1 1 0 0 1-1 1h-4v-2a2 2 0 1 0-4 0v2H6a1 1 0 0 1-1-1v-4H4a2 2 0 1 1 0-4h1V7a1 1 0 0 1 1-1h4z"/></svg></span>Growth Misdiagnoses™<span>성장 오진단 프레임</span></div>
+        <div><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M7 3c4 3 4 6 0 9s-4 6 0 9M17 3c-4 3-4 6 0 9s4 6 0 9M8 7.5h8M8 16.5h8M7 12h10"/></svg></span>Growth DNA Map™<span>성장 유전자 지도</span></div>
+        <div><span class="tic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span>Diagnosis Type™<span>진단 유형 분류</span></div>
+      </div>
+      <div class="fl-arrow rv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+      <div class="fl solid rv"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M4 20V6l5 4 5-7 6 5v12"/></svg></span>Sustainable Growth Blueprint™ — 성장 청사진</div>
+      <div class="fl-arrow rv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+      <div class="fl line rv"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3.5 20c.6-3.4 3-5 5.5-5s4.9 1.6 5.5 5M15 15.6c2 .3 3.6 1.6 4.2 4.4"/></svg></span>Growth Alignment Session™ — 실행 정렬</div>
+      <div class="fl-arrow rv"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M12 4v14M6 13l6 6 6-6"/></svg></div>
+      <div class="fl solid rv" style="background:linear-gradient(135deg,var(--navy),#12385A)"><span class="fic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span>Sustainable Profit Engine™ — 지속 가능 이윤 엔진</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ USP ============ -->
+<section class="usp">
+  <div class="wrap">
+    <div class="rv-l">
+      <div class="eyebrow">Why Growth Design Lab</div>
+      <div class="big"><span class="cnt" data-to="23">0</span><small>YEARS OF EXPERIENCE</small></div>
+      <p class="d"><strong>23년간 대기업부터 스타트업까지</strong> 다양한 성장 단계를 직접 경험하며 축적한
+      실전 판단력을 바탕으로, 기업의 성장 병목을 진단하고 지속 가능한 성장 구조를 설계하는
+      <strong>Growth Design Methodology™</strong>를 보유하고 있습니다.</p>
+      <!-- 성장 바 차트 픽토그램 -->
+      <svg class="usp-chart grow" viewBox="0 0 420 150" fill="none" aria-hidden="true">
+        <line x1="10" y1="140" x2="410" y2="140" stroke="rgba(255,255,255,.2)" stroke-width="1.5"/>
+        <rect class="bar" x="30"  y="100" width="44" height="40"  rx="5" fill="#1B324D"/>
+        <rect class="bar" x="106" y="78"  width="44" height="62"  rx="5" fill="#1B324D"/>
+        <rect class="bar" x="182" y="56"  width="44" height="84"  rx="5" fill="rgba(16,163,106,.5)"/>
+        <rect class="bar" x="258" y="34"  width="44" height="106" rx="5" fill="rgba(16,163,106,.8)"/>
+        <rect class="bar" x="334" y="12"  width="44" height="128" rx="5" fill="#0FBF7C"/>
+      </svg>
+    </div>
+    <div class="usp-points">
+      <div class="up rv-r"><div class="uic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.2-.6L3 21l1.7-4.5A8.4 8.4 0 1 1 21 11.5z"/></svg></div><div><h4>Signature Statement</h4><p>우리는 성장을 컨설팅하지 않습니다. 성장이 작동하는 구조를 설계합니다 — 사람들이 기억하는 우리의 한 문장.</p></div></div>
+      <div class="up rv-r"><div class="uic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6-6 6 6-6 6z"/><path d="M12 15v6M8 21h8"/></svg></div><div><h4>USP</h4><p>실전에서 검증된 판단력과 체계화된 방법론 — 고객이 우리를 선택하는 이유입니다.</p></div></div>
+      <div class="up rv-r"><div class="uic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/></svg></div><div><h4>Methodology</h4><p>진단(Audit)에서 설계(Blueprint), 실행 정렬(Alignment)까지 — 우리가 일하는 방식입니다.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta" id="contact">
+  <div class="cic rv"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5M11 8v6M8 11h6"/></svg></div>
+  <h2 class="rv">지금, 당신 기업의 성장을 막고 있는<br>병목은 무엇입니까?</h2>
+  <p class="rv">Growth Audit™로 성장 병목을 진단하고, 지속 가능한 성장 구조 설계를 시작하세요.</p>
+  <a class="btn rv" href="mailto:contact@growthdesignlab.com">진단 문의하기
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="ft">
+      <div>
+        <a href="#top" class="brand">
+          <svg width="30" height="33" viewBox="0 0 200 220" fill="none" aria-hidden="true">
+            <path d="M36 64 L168 16 L168 150 L144 143 L144 44 L62 72 L62 178 L88 196 L36 186 Z" fill="#F1F4FA"/>
+            <rect x="96" y="118" width="18" height="84" fill="#10A36A"/>
+            <rect x="120" y="90" width="20" height="108" fill="#10A36A"/>
+          </svg>
+          <div class="brand-lt" role="img" aria-label="GROWTH DESIGN LAB">
+        <svg class="lt1" viewBox="0 0 492 78" fill="none" stroke="currentColor" stroke-width="12" aria-hidden="true">
+          <!-- G -->
+          <path d="M56 12 A30 30 0 1 0 56 60 L56 42 L36 42"/>
+          <!-- R -->
+          <path d="M84 8 V70 M84 8 H104 A16 16 0 0 1 104 40 H84 M102 40 L124 70"/>
+          <!-- O -->
+          <circle cx="172" cy="39" r="30"/>
+          <!-- W (VV 오버랩 — 첫 V 업스트로크 전체가 그린) -->
+          <path d="M228 8 L252 70"/>
+          <path d="M252 70 L274 8" stroke="#10A36A"/>
+          <path d="M272 8 L296 70 M296 70 L318 8"/>
+          <!-- T -->
+          <path d="M344 14 H404 M374 14 V70"/>
+          <!-- H -->
+          <path d="M428 8 V70 M480 8 V70 M428 40 H480"/>
+        </svg>
+        <svg class="lt2" viewBox="0 0 360 42" fill="none" stroke="#10A36A" stroke-width="6" aria-hidden="true">
+          <!-- D -->
+          <path d="M4 3 V39 M4 3 H12 A18 18 0 0 1 12 39 H4"/>
+          <!-- E -->
+          <path d="M46 3 V39 M46 3 H70 M46 21 H66 M46 39 H70"/>
+          <!-- S -->
+          <path d="M112 8 C98 2 88 7 90 14 C92 21 108 20 110 27 C112 34 102 41 88 35"/>
+          <!-- I -->
+          <path d="M134 3 V39"/>
+          <!-- G -->
+          <path d="M176 10 A14 14 0 1 0 176 34 L176 25 L164 25"/>
+          <!-- N -->
+          <path d="M198 39 V3 L222 39 V3"/>
+          <!-- L -->
+          <path d="M256 3 V39 H278"/>
+          <!-- A -->
+          <path d="M296 39 L308 3 L320 39 M301 27 H315"/>
+          <!-- B -->
+          <path d="M340 3 V39 M340 3 H349 A9 9 0 0 1 349 20 H340 M340 20 H351 A10 10 0 0 1 351 39 H340"/>
+        </svg>
+      </div>
+        </a>
+        <p class="ft-note">기업의 성장 병목을 진단하고 지속 가능한 성장 구조를 설계하는 Growth Design Partner.</p>
+      </div>
+      <div class="ft-links">
+        <a href="#identity">Identity</a>
+        <a href="#philosophy">Philosophy</a>
+        <a href="#methodology">Methodology</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <div class="copy">
+      <span>© 2026 Growth Design Lab™. All rights reserved.</span>
+      <span>Growth Design Methodology™ · Growth Audit™ · Sustainable Profit Engine™</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---- 스크롤 프로그레스 바 ----
+const prog=document.getElementById('progress');
+addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+},{passive:true});
+
+// ---- 히어로 파티클 생성 ----
+(function(){
+  const hero=document.querySelector('.hero');
+  for(let i=0;i<14;i++){
+    const p=document.createElement('span');
+    p.className='pt';
+    const s=2+(i%3)*2;
+    p.style.cssText=`width:${s}px;height:${s}px;left:${(i*7.3+4)%96}%;bottom:${-(i%5)*8}px;animation-duration:${9+(i%6)*3}s;animation-delay:${-i*1.7}s`;
+    hero.appendChild(p);
+  }
+})();
+
+// ---- 스크롤 리빌 (60ms 스태거) ----
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const siblings=[...e.target.parentElement.querySelectorAll(':scope > .rv, :scope > .rv-l, :scope > .rv-r')];
+      const idx=Math.max(0,siblings.indexOf(e.target));
+      setTimeout(()=>e.target.classList.add('on'), idx*60);
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.15,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv,.rv-l,.rv-r').forEach(el=>io.observe(el));
+
+// ---- 라인 드로잉 & 바 성장 트리거 ----
+const vio=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('on');vio.unobserve(e.target)}
+  });
+},{threshold:.35});
+document.querySelectorAll('.draw,.grow').forEach(el=>vio.observe(el));
+
+// ---- 원칙 궤도 회전 ----
+(function(){
+  const orbit=document.querySelector('.orbit');
+  if(!orbit)return;
+  let a=0;
+  const nodes=[...orbit.children].map(g=>{
+    const m=g.getAttribute('transform').match(/translate\(([\d.]+),([\d.]+)\)/);
+    return {g,x:+m[1]-210,y:+m[2]-210};
+  });
+  (function spin(){
+    a+=0.0022;
+    nodes.forEach(n=>{
+      const x=n.x*Math.cos(a)-n.y*Math.sin(a);
+      const y=n.x*Math.sin(a)+n.y*Math.cos(a);
+      n.g.setAttribute('transform',`translate(${210+x},${210+y})`);
+    });
+    requestAnimationFrame(spin);
+  })();
+})();
+
+// ---- 숫자 카운터 ----
+const cio=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target,to=+el.dataset.to,dur=1200,t0=performance.now();
+    (function tick(t){
+      const p=Math.min(1,(t-t0)/dur),ease=1-Math.pow(1-p,3);
+      el.textContent=Math.round(to*ease).toLocaleString();
+      if(p<1)requestAnimationFrame(tick);
+    })(t0);
+    cio.unobserve(el);
+  });
+},{threshold:.6});
+document.querySelectorAll('.cnt').forEach(el=>cio.observe(el));
+
+// ---- 모바일 메뉴 ----
+const ham=document.getElementById('ham'),menu=document.getElementById('menu');
+ham.addEventListener('click',()=>menu.classList.toggle('open'));
+menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
+</script>
+</body>
+</html>
