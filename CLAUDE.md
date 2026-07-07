@@ -1,5 +1,8 @@
 # ROBOS 홈페이지 리뉴얼 프로젝트
 
+> 📌 이 저장소에는 별개 프로젝트가 하나 더 있다: **Growth Design Lab 홈페이지** (`growth-design-lab/`).
+> 그쪽 작업 시에는 반드시 `growth-design-lab/CLAUDE.md`의 가이드를 따를 것. 두 프로젝트의 파일·디자인 토큰을 섞지 않는다.
+
 ## 프로젝트 개요
 - **결과물**: `robos-renewal/index.html` — ROBOS Re:Branding 2026 원페이지 홈페이지 (단일 파일, 빌드 도구 없음)
 - **목적**: IPO(기술특례 상장) 대비 리뉴얼. TECH·확장성 강조.
